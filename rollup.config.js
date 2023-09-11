@@ -6,14 +6,17 @@ import commonjsPlugin from '@rollup/plugin-commonjs';
 import postcssPlugin from 'rollup-plugin-postcss';
 import terserPlugin from '@rollup/plugin-terser';
 import jsonPlugin from '@rollup/plugin-json';
+import replace from "@rollup/plugin-replace";
 import delPlugin from 'rollup-plugin-delete';
 import nodePolyfillsPlugin from 'rollup-plugin-polyfill-node';
 import postcssImportPlugin from "postcss-import";
 import postcssCombinePlugin from "postcss-combine-media-query";
 import postcssPresetEnvPlugin from "postcss-preset-env";
 import cssnanoPlugin from "cssnano";
-import vue from 'rollup-plugin-vue'
-
+import vue from 'rollup-plugin-vue';
+import rollupPluginInjectProcessEnv from "rollup-plugin-inject-process-env";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 
 const
@@ -34,27 +37,78 @@ const
     instances = new Map();
 
 
+class RTools {
 
+    loadPlugins({name, output} = {}) {
+        const
+            {dir} = path.parse(output),
+            {isProd} = this,
+            plugins = [
+                replace({
+                    '__VUE_OPTIONS_API__': !isProd,
+                    '__VUE_PROD_DEVTOOLS__': !isProd,
+                }),
+                jsonPlugin(),
+                vue({
+                    css: false,
+                }),
+                postcssPlugin({
+                    plugins: [
 
+                        postcssImportPlugin(),
+                        tailwindcss(),
+                        autoprefixer(),
+                        !isProd && postcssCombinePlugin(),
+                        postcssPresetEnvPlugin({
+                            autoprefixer: {
+                                cascade: false,
+                            },
+                            features: {
+                                'custom-properties': true,
+                            },
+                        }),
+                        isProd && cssnanoPlugin({preset: 'default'}),
+                    ],
+                    sourceMap: !isProd,
+                    extract: name + '.css',
+                }),
+                resolvePlugin({
+                    moduleDirectories: ['node_modules'],
+                    extensions: this.cfg.ext,
+                    browser: true,
+                }),
+                commonjsPlugin(),
+                nodePolyfillsPlugin(),
+                rollupPluginInjectProcessEnv(),
+            ];
 
-class RTools
-{
+        if (isProd) {
+            plugins.unshift(delPlugin({
+                targets: path.join(dir, '*.map')
+            }));
+            plugins.push(terserPlugin());
+        } else {
+            if (this.cfg.livereload) {
+                plugins.push(livereloadPlugin({
+                    delay: 200,
+                    watch: this.cfg.livereload,
+                }));
+            }
+        }
 
-    static loadConfig(file = 'rollup.json')
-    {
+        return plugins;
+    }
+
+    static loadConfig(file = 'rollup.json') {
         let cfg;
 
-        if (!instances.has(file))
-        {
-            if (fs.existsSync(file))
-            {
+        if (!instances.has(file)) {
+            if (fs.existsSync(file)) {
                 cfg = new RTools({
                     ...defaults,
-                    ...JSON.parse(fs.readFileSync(file, { encoding: 'utf-8' }))
+                    ...JSON.parse(fs.readFileSync(file, {encoding: 'utf-8'}))
                 });
-            }
-            else
-            {
+            } else {
                 cfg = new RTools(defaults);
             }
             instances.set(file, cfg);
@@ -66,13 +120,11 @@ class RTools
 
     #watch;
 
-    get isProd()
-    {
+    get isProd() {
         return this.cfg.prod;
     }
 
-    get watch()
-    {
+    get watch() {
         return this.#watch ??= [
             ...this.cfg.input,
             ...this.cfg.watch
@@ -81,59 +133,46 @@ class RTools
         ).map(dir => !fs.lstatSync(dir).isDirectory() ? path.parse(dir).dir : dir);
     }
 
-    constructor(config)
-    {
-        this.cfg = config ?? { ...defaults };
+    constructor(config) {
+        this.cfg = config ?? {...defaults};
         this.fixConfig(this.cfg);
 
     }
 
 
-    fixConfig(cfg)
-    {
-        ['input', 'output', 'formats', 'watch', 'ext'].forEach(prop =>
-        {
+    fixConfig(cfg) {
+        ['input', 'output', 'formats', 'watch', 'ext'].forEach(prop => {
 
-            if (false === cfg[prop])
-            {
+            if (false === cfg[prop]) {
                 cfg[prop] = [];
             }
 
-            if (!Array.isArray(cfg[prop]))
-            {
+            if (!Array.isArray(cfg[prop])) {
                 cfg[prop] = [cfg[prop]];
             }
         });
 
-        if (typeof cfg.livereload === 'string')
-        {
+        if (typeof cfg.livereload === 'string') {
             cfg.livereload = [cfg.livereload];
         }
 
 
-        if (cfg.livereload === true)
-        {
+        if (cfg.livereload === true) {
             cfg.livereload = [...cfg.output];
-        }
-
-        else if (Array.isArray(cfg.livereload))
-        {
+        } else if (Array.isArray(cfg.livereload)) {
             cfg.livereload.push(...cfg.output);
         }
     }
 
 
-    isJSFile(file)
-    {
+    isJSFile(file) {
         return this.cfg.ext.some(
             ext => file.toLowerCase().endsWith(ext)
         );
     }
 
 
-
-    isIgnored(file)
-    {
+    isIgnored(file) {
         return this.cfg.ignore.some(
             re => (
                 re instanceof RegExp ? re : new RegExp(re)
@@ -142,9 +181,8 @@ class RTools
     }
 
 
-    fileInfo({ file, input, outputDir })
-    {
-        const { name } = path.parse(file);
+    fileInfo({file, input, outputDir}) {
+        const {name} = path.parse(file);
         return {
             name,
             input,
@@ -152,16 +190,12 @@ class RTools
         };
     }
 
-    fileList({ inputDir, outputDir } = {})
-    {
-        if (!fs.existsSync(inputDir))
-        {
+    fileList({inputDir, outputDir} = {}) {
+        if (!fs.existsSync(inputDir)) {
             return [];
         }
-        if (!fs.lstatSync(inputDir).isDirectory())
-        {
-            if (!this.isJSFile(inputDir))
-            {
+        if (!fs.lstatSync(inputDir).isDirectory()) {
+            if (!this.isJSFile(inputDir)) {
                 return [];
             }
 
@@ -185,93 +219,28 @@ class RTools
             }));
     }
 
-    loadPlugins({ name, output } = {})
-    {
-        const
-            { dir } = path.parse(output),
-            { isProd } = this,
-            plugins = [
-                jsonPlugin(),
-                vue({
-                    css: false,
-                    template:{
-                        isProduction: this.isProd,
-                        optimizeSSR: false,
-                    }
-                }),
-                postcssPlugin({
-                    plugins: [
-                        postcssImportPlugin(),
-                        !isProd && postcssCombinePlugin(),
-                        postcssPresetEnvPlugin({
-                            autoprefixer: {
-                                cascade: false,
-                            },
-                            features: {
-                                'custom-properties': true,
-                            },
-                        }),
-                        isProd && cssnanoPlugin({ preset: 'default' }),
-                    ],
-                    sourceMap: !isProd,
-                    extract: name + '.css',
-                }),
 
-                resolvePlugin({
-                    moduleDirectories: ['node_modules'],
-                    extensions: this.cfg.ext,
-                    browser: true,
-                }),
-                commonjsPlugin(),
-                nodePolyfillsPlugin(),
-            ];
-
-        if (isProd)
-        {
-            plugins.unshift(delPlugin({
-                targets: path.join(dir, '*.map')
-            }));
-            plugins.push(terserPlugin());
-        } else
-        {
-            if (this.cfg.livereload)
-            {
-                plugins.push(livereloadPlugin({
-                    delay: 200,
-                    watch: this.cfg.livereload,
-                }));
-            }
-        }
-
-        return plugins;
-    }
-
-
-    outputFormat({ format, output, name } = {})
-    {
+    outputFormat({format, output, name} = {}) {
 
         const result = {
             format,
             sourcemap: !this.isProd,
         };
-        if (['es'].includes(format))
-        {
+        if (['es'].includes(format)) {
             return {
                 file: output,
                 inlineDynamicImports: true,
                 ...result
             };
         }
-        if (['iife'].includes(format))
-        {
+        if (['iife'].includes(format)) {
             return {
                 file: path.join(path.parse(output).dir, `${name}.${format}${this.cfg.out}`),
                 name,
                 ...result,
             };
         }
-        if (['umd'].includes(format))
-        {
+        if (['umd'].includes(format)) {
             return {
                 file: path.join(path.parse(output).dir, `${name}.${format}${this.cfg.out}`),
                 name,
@@ -281,13 +250,13 @@ class RTools
         }
         throw new Error(`Invalid format ${format}`);
     }
-    makeConfig(files = [])
-    {
+
+    makeConfig(files = []) {
         return files.map(({
-            name,
-            input,
-            output
-        }) => ({
+                              name,
+                              input,
+                              output
+                          }) => ({
             context: 'globalThis',
             watch: {
                 exclude: 'node_modules/**',
@@ -295,13 +264,13 @@ class RTools
             },
             input,
             output: this.cfg.formats.map(
-                format => this.outputFormat({ format, output, name })
+                format => this.outputFormat({format, output, name})
             ),
-            plugins: this.loadPlugins({ name, output }),
+            plugins: this.loadPlugins({name, output}),
         }));
     }
-    generateConfig()
-    {
+
+    generateConfig() {
         return [].concat(
             ...this.cfg.input.map(
                 (dir, index) =>

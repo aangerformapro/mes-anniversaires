@@ -1,19 +1,26 @@
 import NotFoundView from "./views/NotFoundView.vue";
+import HomeView from "./views/HomeView.vue";
+import AboutView from "./views/AboutView.vue";
 
 export default [
     {
         path: '/',
         name: 'home',
-        component: ()=> import('./views/HomeView.vue')
+        component: HomeView
+
     },
     {
         path: '/about',
         name: 'about',
-        component: () => import('./views/AboutView.vue')
+        component: AboutView
     },
+    // {
+    //     path: '/404',
+    //     name: 'notfound',
+    //     component: NotFoundView
+    // },
     {
-        path: '/.+',
-        name: 'notfound',
+        path: '/:catchAll(.*)',
         component: NotFoundView
     }
 ];
