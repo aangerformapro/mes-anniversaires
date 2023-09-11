@@ -12,6 +12,9 @@ import postcssImportPlugin from "postcss-import";
 import postcssCombinePlugin from "postcss-combine-media-query";
 import postcssPresetEnvPlugin from "postcss-preset-env";
 import cssnanoPlugin from "cssnano";
+import vue from 'rollup-plugin-vue'
+
+
 
 const
     defaults = {
@@ -29,6 +32,9 @@ const
         livereload: true
     },
     instances = new Map();
+
+
+
 
 
 class RTools
@@ -186,6 +192,13 @@ class RTools
             { isProd } = this,
             plugins = [
                 jsonPlugin(),
+                vue({
+                    css: false,
+                    template:{
+                        isProduction: this.isProd,
+                        optimizeSSR: false,
+                    }
+                }),
                 postcssPlugin({
                     plugins: [
                         postcssImportPlugin(),

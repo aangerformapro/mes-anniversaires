@@ -25,10 +25,10 @@ app.use(express.static(root));
 
 
 // for spa uncomment this
-// app.get('*', (req, res) =>
-// {
-//     res.sendFile(path.resolve(process.cwd(), "public", "index.html"));
-// });
+app.get('*', (req, res) =>
+{
+    res.sendFile(path.resolve(process.cwd(), "public", "index.html"));
+});
 
 app.listen(port, () =>
 {
