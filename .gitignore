@@ -1,0 +1,9 @@
+node_modules
+vendor
+*.lock
+*-lock.*
+dist
+.env
+.env.local
+public/build
+.idea
