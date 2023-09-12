@@ -12,3 +12,29 @@
 
 @tailwind components;
 @tailwind utilities;
+
+
+@layer components {
+
+
+    input[type="search"]{
+        @apply relative m-0 block w-full min-w-0 flex-auto border border-solid border-neutral-300 bg-transparent bg-clip-padding p-4 text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary pe-10;
+        height: 50px;
+        background: #f6f6f6;
+        border-radius: 100px;
+    }
+
+    input[type="search"]::placeholder{
+        color: #bdbdbd;
+    }
+
+    .search-icon {
+        @apply flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200 absolute top-0 right-0 h-[50px] z-10;
+    }
+
+    .search-icon svg{
+        width: 20px;
+        height: 20px;
+        color: #bdbdbd;
+    }
+}
