@@ -1,6 +1,7 @@
-import {defineStore} from "pinia";
-import {isEmpty, isInt, isNumeric, isString, uniqid} from "../../assets/utils/utils.mjs";
+import { defineStore } from "pinia";
+import { isEmpty, isInt, isNumeric, isString, uniqid } from "../../assets/utils/utils.mjs";
 import LocalStore from "../../assets/components/stores/webstore.mjs";
+import { fakerFR as faker } from "@faker-js/faker";
 
 const
     DEFAULT_PICTURE = './assets/pictures/avatar.svg',
@@ -11,7 +12,8 @@ const
     persons = new Map,
     gifts = new Map;
 
-export class Person {
+export class Person
+{
 
     id = '';
     nom = '';
@@ -19,64 +21,83 @@ export class Person {
     photo = '';
 
 
-    constructor({nom, birthday, photo, id} = {}) {
+    constructor({ nom, birthday, photo, id } = {})
+    {
 
         this.id = id ?? uniqid();
 
-        if(!isString(nom) || isEmpty(nom)){
+        if (!isString(nom) || isEmpty(nom))
+        {
             throw new TypeError('Invalid Person name');
         }
-        this.nom = nom ;
-        if(isString(birthday)){
+        this.nom = nom;
+        if (isString(birthday))
+        {
             birthday = new Date(birthday);
         }
-        if(!(birthday instanceof Date)){
+        if (!(birthday instanceof Date))
+        {
             throw new TypeError('Invalid birthday, not an instance of Date');
         }
         this.photo = photo ?? DEFAULT_PICTURE;
 
-        if(!persons.has(this.id)){
+        if (!persons.has(this.id))
+        {
             persons.set(this.id, this);
 
-            if(!gifts.has(this)){
+            if (!gifts.has(this))
+            {
                 gifts.set(this, new Set);
             }
         }
-
     }
 
-    extract(){
+    get gifts()
+    {
+        return [...gifts.get(
+            persons.get(this.id)
+        )];
+    }
+
+    extract()
+    {
         return {
             id: this.id,
             nom: this.nom,
             photo: this.photo,
-            birthday: this.birthday.toJSON( )
-        }
+            birthday: this.birthday.toJSON()
+        };
     }
 }
 
-export class Gift {
+export class Gift
+{
     id = '';
     id_person = '';
     annee = 0;
     description = '';
 
-    constructor({id, id_person, annee, description} = {}) {
+    constructor({ id, id_person, annee, description } = {})
+    {
 
         this.id = id ?? uniqid();
 
-        if(id_person instanceof Person){
+        if (id_person instanceof Person)
+        {
             id_person = id_person.id;
         }
 
-        if(!isString(id_person) || isEmpty(id_person)){
+        if (!isString(id_person) || isEmpty(id_person))
+        {
             throw new TypeError('Invalid Person id');
         }
-        if(!isNumeric(annee)){
+        if (!isNumeric(annee))
+        {
             throw new TypeError('Invalid Gift year');
         }
 
-        if(!isString(description) || isEmpty(description)){
+        if (!isString(description) || isEmpty(description))
+        {
             throw new TypeError('Invalid Gift description');
         }
 
@@ -92,22 +113,25 @@ export class Gift {
     }
 
 
-    get person(){
+    get person()
+    {
 
-        if(!persons.has(this.id_person)){
+        if (!persons.has(this.id_person))
+        {
             throw new Error('Invalid Gift, person does not exists.');
         }
 
         return persons.get(this.id_person);
     }
 
-    extract(){
+    extract()
+    {
         return {
             id: this.id,
             id_person: this.id_person,
             annee: this.annee,
             description: this.description
-        }
+        };
     }
 
 
@@ -115,25 +139,30 @@ export class Gift {
 
 
 
-function loadDataStore(){
-    if(persons.size){
+function loadDataStore()
+{
+    if (persons.size)
+    {
         return;
     }
     LocalStore.getItem(PERSON_KEY, [])
-        .forEach(item=> new Person(item));
+        .forEach(item => new Person(item));
 
     LocalStore.getItem(GIFTS_KEY, [])
-        .forEach(item=>new Gift(item));
+        .forEach(item => new Gift(item));
 
 }
 
-function saveDataStore(){
+function saveDataStore()
+{
 
     const people = [], presents = [];
 
-    for(let item of persons.values()){
+    for (let item of persons.values())
+    {
         people.push(item);
-        for(let _item of gifts.get(persons)){
+        for (let _item of gifts.get(persons))
+        {
             presents.push(_item);
         }
     }
@@ -144,9 +173,9 @@ function saveDataStore(){
 
 
 
- export const usePersonnes = defineStore(
-     'personnes',
- {
+export const usePersonnes = defineStore(
+    'personnes',
+    {
 
-     }
- );
+    }
+);
