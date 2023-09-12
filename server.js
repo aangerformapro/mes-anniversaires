@@ -17,7 +17,7 @@ const
         }
     });
 
-let { port, root } = argv;
+let {port, root} = argv;
 
 app.use(express.static(root));
 
@@ -25,14 +25,12 @@ app.use(express.static(root));
 
 
 // for spa uncomment this
-app.get('*', (req, res) =>
-{
+app.get('*', (req, res) => {
     res.sendFile(path.resolve(process.cwd(), "public", "index.html"));
 });
 
-app.listen(port, () =>
-{
-    console.log(
+app.listen(port, () => {
+    console.debug(
         'Server ' +
         path.basename(path.resolve()) +
         ' listening on port ' + port,

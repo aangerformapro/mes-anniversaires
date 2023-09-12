@@ -7,8 +7,7 @@
     "build:js": "rollup -c",
     "dev:watch": "nodemon --exec \"rollup -c -w\"",
     "dev:serve": "node server -p 8050",
-    "fonts": "node copyfonts",
-    "serve:php": "php -S localhost:8050 -t public"
+    "fonts": "node copyfonts"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.4",

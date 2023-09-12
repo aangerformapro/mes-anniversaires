@@ -37,6 +37,10 @@ const
     instances = new Map();
 
 
+process.env['NODE_ENV'] ??= !process.env.ROLLUP_WATCH ? 'production' : 'development';
+
+// process.env.BUILD = 'production';
+
 class RTools {
 
     loadPlugins({name, output} = {}) {
@@ -45,16 +49,25 @@ class RTools {
             {isProd} = this,
             plugins = [
                 replace({
-                    '__VUE_OPTIONS_API__': !isProd,
-                    '__VUE_PROD_DEVTOOLS__': !isProd,
+                    values: {
+                        '__VUE_OPTIONS_API__': !isProd,
+                        '__VUE_PROD_DEVTOOLS__': !isProd
+                    },
+                    preventAssignment: true
+
                 }),
+
                 jsonPlugin(),
                 vue({
                     css: false,
+                    template: {
+                        devToolsEnabled: false,
+                        isProduction: true
+                    }
                 }),
+
                 postcssPlugin({
                     plugins: [
-
                         postcssImportPlugin(),
                         tailwindcss(),
                         autoprefixer(),
@@ -78,8 +91,11 @@ class RTools {
                     browser: true,
                 }),
                 commonjsPlugin(),
+                rollupPluginInjectProcessEnv({
+                    NODE_ENV: process.env['NODE_ENV']
+                }),
                 nodePolyfillsPlugin(),
-                rollupPluginInjectProcessEnv(),
+
             ];
 
         if (isProd) {
@@ -95,6 +111,7 @@ class RTools {
                 }));
             }
         }
+
 
         return plugins;
     }
@@ -290,6 +307,5 @@ class RTools {
 
 const cfg = RTools.loadConfig().generateConfig();
 export default cfg;
-
 
 

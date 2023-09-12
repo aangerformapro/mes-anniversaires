@@ -1,16 +1,16 @@
 <script setup>
-  import {RouterView} from "vue-router";
-  import {onMounted} from "vue";
+import {RouterView} from "vue-router";
+import {onMounted} from "vue";
 
 
-  onMounted(()=>{
-    console.debug(RouterView);
-  })
+// onMounted(()=>{
+//   console.debug(RouterView);
+// })
 
 </script>
 
 <template>
-  <RouterView />
+  <RouterView/>
 </template>
 
 <style scoped>

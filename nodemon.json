@@ -1,12 +1,12 @@
 {
-    "verbose": true,
-    "ext": "php,html,js,css,scss,png,webp,jpg,json",
-    "ignore": [
-        "node_modules/"
-    ],
-    "watch": [
-        "./src/**/*",
-        "public/*.{html,php}",
-        "public/assets/**/*"
-    ]
+  "verbose": true,
+  "ext": "html,js,css,scss",
+  "ignore": [
+    "node_modules/"
+  ],
+  "watch": [
+    "./src/**/*",
+    "public/*.html",
+    "public/assets/**/*"
+  ]
 }

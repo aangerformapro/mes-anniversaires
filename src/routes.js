@@ -14,11 +14,6 @@ export default [
         name: 'about',
         component: AboutView
     },
-    // {
-    //     path: '/404',
-    //     name: 'notfound',
-    //     component: NotFoundView
-    // },
     {
         path: '/:catchAll(.*)',
         component: NotFoundView

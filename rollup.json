@@ -1,9 +1,11 @@
 {
-    "input": [
-        "assets/app.js"
-    ],
-    "output": [
-        "public/build"
-    ],
-    "livereload": true
+  "input": [
+    "assets/app.js"
+  ],
+  "output": [
+    "public/build"
+  ],
+  "watch": [
+    "src"
+  ]
 }
