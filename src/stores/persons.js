@@ -1,44 +1,33 @@
-import { defineStore } from "pinia";
-import { Person } from "../models/Person.js";
-import { ref, watch } from "vue";
+import {defineStore} from "pinia";
+import {Person} from "../models/Person.js";
+import {ref, watch} from "vue";
 import {isEmpty, removeAccent} from "../../assets/utils/utils.mjs";
-
-
-
 
 
 export const usePersonsStore = defineStore(
     'persons',
-    () =>
-    {
+    () => {
 
         const
             value = ref(Person.findAll()),
             search = ref(''),
             filtered = ref(Person.findAll());
 
-        Person.hook.subscribe(() =>
-        {
+        Person.hook.subscribe(() => {
             value.value = Person.findAll();
         });
 
-        function applyFilter(persons, search)
-        {
-
-            if(isEmpty(search)){
+        function applyFilter(persons, search) {
+            if (isEmpty(search)) {
                 return value.value;
             }
-
-
             const results = new Set;
-
-            for (let s of search.split(/\s+/))
-            {
+            for (let s of search.split(/\s+/)) {
 
                 persons
                     .filter(
                         x => removeAccent(x.name.toLowerCase())
-                                .includes(removeAccent(s.toLowerCase())))
+                            .includes(removeAccent(s.toLowerCase())))
                     .forEach(
                         x => results.add(x)
                     );
@@ -47,11 +36,14 @@ export const usePersonsStore = defineStore(
         }
 
 
+        watch(search, newValue => {
+            filtered.value = applyFilter(value.value, newValue);
+        });
 
-        watch(search, newValue=>{
-           filtered.value = applyFilter(value.value, newValue)
+        watch(value, newValue => {
+            filtered.value = applyFilter(newValue, search.value);
         });
 
 
-        return { value, search, filtered };
+        return {value, search, filtered};
     });
