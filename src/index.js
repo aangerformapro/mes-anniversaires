@@ -6,8 +6,11 @@ import {createPinia} from "pinia";
 import routes from './routes';
 
 const app = createApp(App);
-app.use(createPinia())
+app
+    .use(createPinia())
     .use(createRouter({
         history: createWebHistory(),
         routes
-    })).mount('#app');
+    }))
+
+    .mount('#app');

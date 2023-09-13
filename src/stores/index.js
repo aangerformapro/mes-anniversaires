@@ -1,131 +1,121 @@
-import { defineStore } from "pinia";
-import { isEmpty, isInt, isNumeric, isString, uniqid } from "../../assets/utils/utils.mjs";
-import LocalStore from "../../assets/components/stores/webstore.mjs";
-import { fakerFR as faker } from "@faker-js/faker";
-
-const
-    DEFAULT_PICTURE = './assets/pictures/avatar.svg',
-    PERSON_KEY = 'person',
-    GIFTS_KEY = 'gifts';
-
-const
-    persons = new Map,
-    gifts = new Map;
-
-export class Person
+import {defineStore} from "pinia";
+import
 {
+    isEmpty,
+    isNumeric,
+    isString
+} from "../../assets/utils/utils.mjs";
+import {fakerFR as faker} from "@faker-js/faker";
+import Model from "../../assets/utils/model.mjs";
+import {ref} from "vue";
 
-    id = '';
-    nom = '';
-    birthday = new Date();
-    photo = '';
+
+const DEFAULT_PICTURE = './assets/pictures/avatar.svg';
 
 
-    constructor({ nom, birthday, photo, id } = {})
-    {
+export class Person extends Model {
 
-        this.id = id ?? uniqid();
+    /**
+     * @type {string}
+     */
+    name;
+    /**
+     * @type Date
+     */
+    birthday;
+    /**
+     * @type string
+     */
+    photo;
 
-        if (!isString(nom) || isEmpty(nom))
-        {
+    get birthdayFr() {
+        return this.birthday.toLocaleDateString('fr-FR');
+    }
+
+    validate(data) {
+
+        if (!isString(data.name) || isEmpty(data.name)) {
             throw new TypeError('Invalid Person name');
         }
-        this.nom = nom;
-        if (isString(birthday))
-        {
-            birthday = new Date(birthday);
+
+        if (isString(data.birthday)) {
+            data.birthday = new Date(data.birthday);
         }
-        if (!(birthday instanceof Date))
-        {
+
+        if (!(data.birthday instanceof Date)) {
             throw new TypeError('Invalid birthday, not an instance of Date');
         }
-        this.photo = photo ?? DEFAULT_PICTURE;
 
-        if (!persons.has(this.id))
-        {
-            persons.set(this.id, this);
-
-            if (!gifts.has(this))
-            {
-                gifts.set(this, new Set);
-            }
+        if (isEmpty(data.photo)) {
+            data.photo = DEFAULT_PICTURE;
         }
+
+        if (!isString(data.photo) || isEmpty(data.photo)) {
+            throw new TypeError('Invalid Person photo');
+        }
+
+
     }
 
-    get gifts()
-    {
-        return [...gifts.get(
-            persons.get(this.id)
-        )];
+    get gifts() {
+        return Gift.find({id_person: this.id});
     }
 
-    extract()
-    {
+    extract() {
         return {
             id: this.id,
-            nom: this.nom,
+            name: this.name,
             photo: this.photo,
-            birthday: this.birthday.toJSON()
+            birthday: this.birthday.toDateString(),
         };
     }
 }
 
-export class Gift
-{
-    id = '';
-    id_person = '';
-    annee = 0;
-    description = '';
+Model.register(new Person);
 
-    constructor({ id, id_person, annee, description } = {})
-    {
+export class Gift extends Model {
 
-        this.id = id ?? uniqid();
+    /**
+     * @type {string}
+     */
+    id_person;
+    /**
+     * @type {number}
+     */
+    annee;
 
-        if (id_person instanceof Person)
-        {
-            id_person = id_person.id;
+    /**
+     * @type {string}
+     */
+    description;
+
+    validate(data) {
+
+
+        if (data.id_person instanceof Person) {
+            data.id_person = data.id_person.id;
         }
 
-        if (!isString(id_person) || isEmpty(id_person))
-        {
+        if (!isString(data.id_person) || isEmpty(data.id_person)) {
             throw new TypeError('Invalid Person id');
         }
-        if (!isNumeric(annee))
-        {
+        if (!isNumeric(data.annee)) {
             throw new TypeError('Invalid Gift year');
         }
 
-        if (!isString(description) || isEmpty(description))
-        {
+        data.annee = parseInt(data.annee);
+
+        if (!isString(data.description) || isEmpty(data.description)) {
             throw new TypeError('Invalid Gift description');
         }
-
-        this.id_person = id_person;
-        this.annee = parseInt(annee);
-        this.description = description;
-
-        const current = gifts.get(this.person);
-        current.add(this);
-        gifts.set(this.person, current);
-
-
     }
 
 
-    get person()
-    {
-
-        if (!persons.has(this.id_person))
-        {
-            throw new Error('Invalid Gift, person does not exists.');
-        }
-
-        return persons.get(this.id_person);
+    get person() {
+        return Person.findById(this.id_person);
     }
 
-    extract()
-    {
+    extract() {
         return {
             id: this.id,
             id_person: this.id_person,
@@ -133,49 +123,64 @@ export class Gift
             description: this.description
         };
     }
-
-
 }
 
+Model.register(new Gift);
 
 
-function loadDataStore()
-{
-    if (persons.size)
-    {
-        return;
-    }
-    LocalStore.getItem(PERSON_KEY, [])
-        .forEach(item => new Person(item));
+export function makeFakeData(max = 10) {
+    if (Person.findAll().length === 0) {
 
-    LocalStore.getItem(GIFTS_KEY, [])
-        .forEach(item => new Gift(item));
+        for (let _ = 0; _ < max; ++_) {
 
-}
+            const _person = new Person;
+            _person.name = faker.person.fullName();
+            _person.birthday = faker.date.past({years: 80});
+            _person.photo = faker.image.urlLoremFlickr({width: 320, height: 240});
+            Person.add(_person);
 
-function saveDataStore()
-{
+            for (let __ = 0; __ < Math.ceil(Math.random() * max); ++__) {
+                const _gift = new Gift, desc = [
+                    faker.vehicle.vehicle(),
+                    faker.commerce.product(),
+                    faker.animal.type(),
 
-    const people = [], presents = [];
-
-    for (let item of persons.values())
-    {
-        people.push(item);
-        for (let _item of gifts.get(persons))
-        {
-            presents.push(_item);
+                ];
+                _gift.id_person = _person;
+                _gift.annee = faker.date.past({years: 79}).getFullYear();
+                _gift.description = desc[Math.floor(Math.random() * desc.length)];
+                Gift.add(_gift);
+            }
         }
     }
-    LocalStore.setItem(PERSON_KEY, people);
-    LocalStore.setItem(GIFTS_KEY, presents);
-
 }
 
 
+export const usePersonsStore = defineStore('persons', () => {
 
-export const usePersonnes = defineStore(
-    'personnes',
-    {
+    const persons = ref(
+        Person.findAll()
+    );
 
+    Person.hook.subscribe(list => persons.value = list.map(x => Person.findById(x.id)));
+
+    function add(person) {
+        Person.add(person);
     }
-);
+
+    return {persons, add};
+});
+
+
+export const useGiftStore = defineStore('gifts', () => {
+
+    const gifts = ref([]);
+
+    Gift.hook.subscribe(list => gifts.value = list.map(x => Gift.findById(x.id)));
+
+    function add(gift) {
+        Gift.add(gift);
+    }
+
+    return {gifts, add};
+});

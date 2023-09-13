@@ -1,8 +1,6 @@
 import { BackedEnum, getClass, isFunction, isNull, isPlainObject, isUndef, noop, promisify } from "../../utils/utils.mjs";
 
 
-
-
 /**
  * Private properties
  */
@@ -18,7 +16,6 @@ export class DataStoreType extends BackedEnum
     static SYNC = new DataStoreType('sync');
     static ASYNC = new DataStoreType('async');
 }
-
 
 function safeNotEqual(value, newValue)
 {
@@ -127,8 +124,7 @@ export function GetDataStoreHook(
                     if (defaultValue instanceof Promise)
                     {
                         defaultValue.then(newValue => safeSet(newValue));
-                    }
-                    else 
+                    } else
                     {
                         safeSet(defaultValue);
                     }
@@ -153,8 +149,9 @@ export function GetDataStoreHook(
 }
 
 
-
-
+/**
+ * @abstract
+ */
 export class DataStore
 {
 
@@ -188,7 +185,6 @@ export class DataStore
     {
         return _prefixes.get(this) + name;
     }
-
 
 
     // ---------------- Subscriptions ----------------
@@ -254,7 +250,6 @@ export class DataStore
     }
 
 
-
     // ---------------- Abstract Methods ----------------
 
 
@@ -262,7 +257,6 @@ export class DataStore
     {
         throw new Error(getClass(this) + '.keys not implemented.');
     }
-
 
 
     getItem(/** @type {string} */name, defaultValue = null)
@@ -275,8 +269,7 @@ export class DataStore
             if (defaultValue instanceof Promise)
             {
                 defaultValue.then(value => this.setItem(name, value));
-            }
-            else
+            } else
             {
                 this.setItem(name, defaultValue);
             }
@@ -294,7 +287,6 @@ export class DataStore
 
 
 export default DataStore;
-
 
 
 const
@@ -350,8 +342,7 @@ export class NestedStore extends DataStore
             if (value === null)
             {
                 delete obj[name];
-            }
-            else
+            } else
             {
                 obj[name] = value;
             }
@@ -361,8 +352,6 @@ export class NestedStore extends DataStore
 
         return value;
     }
-
-
 
 
 }
