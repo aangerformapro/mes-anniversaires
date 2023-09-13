@@ -37,12 +37,8 @@ export const usePersonsStore = defineStore(
 
                 persons
                     .filter(
-                        x =>
-                            removeAccent(
-                                x.name.toLowerCase()
-                            ).includes(
-                                removeAccent(s.toLowerCase()))
-                    )
+                        x => removeAccent(x.name.toLowerCase())
+                                .includes(removeAccent(s.toLowerCase())))
                     .forEach(
                         x => results.add(x)
                     );
