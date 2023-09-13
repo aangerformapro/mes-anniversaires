@@ -415,6 +415,7 @@ export function createElement(
 }
 
 
+
 /**
  * Generate a unique ID
  * @returns {String}
@@ -423,18 +424,31 @@ export function uniqid()
 {
 
     let value = '';
-    uniqid.values ??= new Set();
+
     do
     {
         value = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
-    while (uniqid.values.has(value));
-    uniqid.values.add(value);
+    while (uniqid.has(value));
+    uniqid.add(value);
     return value;
 }
 
+uniqid.add = (...values) =>
+{
 
+    uniqid.values ??= new Set();
+    values.forEach(
+        x => uniqid.values.add(x)
+    );
 
+};
+
+uniqid.has = (value) =>
+{
+    uniqid.values ??= new Set();
+    return uniqid.values.has(value);
+};
 
 /**
  * Clones an Object/Array
@@ -448,7 +462,6 @@ export function clone(obj)
     {
         return Array.from(obj);
     }
-
 
     if (obj instanceof Object)
     {

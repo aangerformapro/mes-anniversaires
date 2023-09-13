@@ -1,6 +1,6 @@
-import {encode, getClass, isEmpty, isFunction, isPlainObject, isString, uniqid} from "./utils.mjs";
-import LocalStore from "../components/stores/webstore.mjs";
-import Datastore from "../components/stores/datastore.mjs";
+import {encode, getClass, isEmpty, isFunction, isPlainObject, isString, uniqid} from "../../utils/utils.mjs";
+import LocalStore from "./webstore.mjs";
+import Datastore from "./datastore.mjs";
 
 
 const
@@ -19,6 +19,8 @@ function hydrateModel(type, data, validate = true) {
     const i = Object.create(models[type]);
     if (isEmpty(data.id)) {
         data.id = uniqid();
+    } else {
+        uniqid.add(data.id);
     }
 
     validate && i.validate(data);
@@ -26,6 +28,23 @@ function hydrateModel(type, data, validate = true) {
         i[prop] = data[prop];
     }
     return i;
+}
+
+
+function initializeModel(model) {
+
+    const type = getClass(model);
+
+    if (! hooks.has(type) ) {
+
+        // initialize entity cache localStorage
+        model.dataStore.getItem(model.key, () => []).forEach(item => {
+            const entity = hydrateModel(type, item);
+            entities.set(entity.id, entity);
+        });
+        hooks.set(type, model.dataStore.hook(model.key, []));
+    }
+
 }
 
 
@@ -71,7 +90,7 @@ export default class Model {
             throw new Error('Cannot use Model.hook directly.');
         }
 
-        this._initialize();
+        initializeModel(this);
         return hooks.get(type);
     }
 
@@ -103,7 +122,7 @@ export default class Model {
             data = hydrateModel(type, data, false);
         }
 
-        this._initialize();
+        initializeModel(this);
 
         if (getClass(data) === getClass(this)) {
 
@@ -140,7 +159,7 @@ export default class Model {
             throw new TypeError(`${type}.id is not defined.`);
         }
 
-        this._initialize();
+        initializeModel(this);
         entity.validate(entity);
         entities.set(entity.id, entity);
         // update storage
@@ -149,7 +168,7 @@ export default class Model {
     }
 
     /**
-     * @param {string} id
+     * @param {string|object} id
      * @return {Model|null}
      */
     static findById(id) {
@@ -158,11 +177,15 @@ export default class Model {
             throw new Error('Cannot call Model.add() directly.');
         }
 
+        if(typeof id === 'object' && null !== id){
+            id = id.id;
+        }
+
         if (!isString(id) || isEmpty(id)) {
             throw new TypeError(`Invalid argument id`);
         }
 
-        this._initialize();
+        initializeModel(this);
 
         const result = entities.get(id);
 
@@ -180,7 +203,7 @@ export default class Model {
         if (getClass(this) === 'Model') {
             throw new Error('Cannot call Model.add() directly.');
         }
-        this._initialize();
+        initializeModel(this);
 
         const type = getClass(this);
         return [...entities.values()].filter(
@@ -219,24 +242,10 @@ export default class Model {
             return all;
         }
 
-
         throw new TypeError('Invalid constrain provided');
     }
 
-    static _initialize() {
-        const type = getClass(this);
 
-        if (!hooks.has(type)) {
-
-            // initialize entity cache localStorage
-            this.dataStore.getItem(this.key, () => []).forEach(item => {
-                const entity = hydrateModel(type, item);
-                entities.set(entity.id, entity);
-            });
-            hooks.set(type, this.dataStore.hook(this.key, []));
-        }
-
-    }
 
 
     /**
