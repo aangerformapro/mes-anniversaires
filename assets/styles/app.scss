@@ -30,3 +30,6 @@ body {
   height: calc(100vh - 260px);
   max-height: calc(100vh - 260px);
 }
+[data-hidden="true"]{
+  display: none !important;
+}

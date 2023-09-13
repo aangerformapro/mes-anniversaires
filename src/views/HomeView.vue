@@ -1,23 +1,19 @@
 <script setup>
-
-import {onMounted} from "vue";
 import {  usePersonsStore } from "../stores/persons.js";
-import {makeFakeData} from "../stores";
-
-
-
-// //
-// makeFakeData(50);
+import ButtonComponent from "../components/ButtonComponent.vue";
+import AddIcon from "../components/AddIcon.vue";
+import {ref} from "vue";
+import AjouterAnniversaire from "../components/AjouterAnniversaire.vue";
 
 const peoples = usePersonsStore();
 
+const add = ref(false);
+
+function clickButton(){
+    add.value = !add.value;
+}
 
 
-onMounted(() =>
-{
-
-  // console.debug(peoples.persons);
-});
 
 
 </script>
@@ -49,8 +45,17 @@ onMounted(() =>
       </li>
     </ul>
 
-
   </div>
+
+  <div class="absolute bottom-[10px] w-[calc(100vh-40px)] max-w-[600px] h-[68px] pt-2">
+    <ButtonComponent
+        :atclick="clickButton"
+        class="flex justify-center items-center text-center w-full h-full uppercase">
+        <AddIcon class="me-2" :size="20"></AddIcon>
+        Ajouter un anniversaire
+    </ButtonComponent>
+  </div>
+  <AjouterAnniversaire :visible="add"/>
 </template>
 
 <style scoped>

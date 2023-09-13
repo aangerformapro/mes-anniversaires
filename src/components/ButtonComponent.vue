@@ -1,11 +1,40 @@
 <script setup>
-defineProps({})
+import {isFunction} from "../../assets/utils/utils.mjs";
+import {
+  Ripple,
+  initTE,
+} from "tw-elements";
+import {onMounted} from "vue";
+
+
+const props = defineProps([
+  'atclick'
+]);
+
+
+function handleClick(e){
+    e.preventDefault();
+    if(isFunction(props.atclick)){
+      console.debug(props)
+      props.atclick(e);
+    }
+}
+
+onMounted(()=>{
+  initTE({ Ripple });
+});
+
 </script>
 
 <template>
 
-  <button>
-    <slot></slot>
+  <button
+      data-te-ripple-init
+      data-te-ripple-color="light"
+      class="button"
+      @click="handleClick"
+      type="button" >
+    <slot>Valider</slot>
   </button>
 </template>
 
