@@ -8,7 +8,7 @@ export default {
         "./node_modules/tw-elements/dist/js/**/*.js",
     ],
     theme: {
-        extend: {},
+        extend: {}
     },
     plugins: [
         elements

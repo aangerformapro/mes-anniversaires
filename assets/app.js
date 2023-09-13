@@ -1,3 +1,4 @@
 import './components';
+// import './app.css';
+import './app.scss';
 import '../src';
-import './styles/app.scss';

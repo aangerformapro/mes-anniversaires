@@ -17,6 +17,7 @@ import vue from 'rollup-plugin-vue';
 import rollupPluginInjectProcessEnv from "rollup-plugin-inject-process-env";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
+import alias from "@rollup/plugin-alias";
 
 
 const
@@ -48,24 +49,34 @@ class RTools {
             {dir} = path.parse(output),
             {isProd} = this,
             plugins = [
+
+
                 replace({
                     values: {
-                        '__VUE_OPTIONS_API__': !isProd,
-                        '__VUE_PROD_DEVTOOLS__': !isProd
+                        '__VUE_OPTIONS_API__': 'false',
+                        '__VUE_PROD_DEVTOOLS__': 'true',
+                        // '__VUE_DEVTOOLS_PLUGIN_API_AVAILABLE__': 'false',
                     },
                     preventAssignment: true
 
                 }),
 
-                jsonPlugin(),
+
                 vue({
+                    target: 'browser',
                     css: false,
+                    // compilerOptions: {
+                    //     isProd
+                    // },
                     template: {
                         devToolsEnabled: false,
-                        isProduction: true
+                        isProduction: isProd
                     }
                 }),
 
+
+                commonjsPlugin(),
+                jsonPlugin(),
                 postcssPlugin({
                     plugins: [
                         postcssImportPlugin(),
@@ -85,14 +96,15 @@ class RTools {
                     sourceMap: !isProd,
                     extract: name + '.css',
                 }),
+
+                rollupPluginInjectProcessEnv({
+                    NODE_ENV: process.env['NODE_ENV']
+                }),
+
                 resolvePlugin({
                     moduleDirectories: ['node_modules'],
                     extensions: this.cfg.ext,
                     browser: true,
-                }),
-                commonjsPlugin(),
-                rollupPluginInjectProcessEnv({
-                    NODE_ENV: process.env['NODE_ENV']
                 }),
                 nodePolyfillsPlugin(),
 

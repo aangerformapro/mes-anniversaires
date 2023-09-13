@@ -5,6 +5,7 @@ import App from "./App.vue";
 import {createPinia} from "pinia";
 import routes from './routes';
 
+
 const app = createApp(App);
 app
     .use(createPinia())

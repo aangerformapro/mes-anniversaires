@@ -1,17 +1,16 @@
-
 $icons: (
-  'material-icons': 'Material Icons',
-  'material-icons-round': 'Material Icons Round',
-  'material-icons-outlined': 'Material Icons Outlined',
-  'material-icons-sharp': 'Material Icons Sharp',
-  'material-icons-two-tone': 'Material Icons Two Tone'
+  //'material-icons': 'Material Icons',
+  //'material-icons-round': 'Material Icons Round',
+        'material-icons-outlined': 'Material Icons Outlined',
+  //'material-icons-sharp': 'Material Icons Sharp',
+  //'material-icons-two-tone': 'Material Icons Two Tone'
 );
 
-$symbols: (
-  'material-symbols-outlined': 'Material Symbols Outlined',
-  'material-symbols-rounded': 'Material Symbols Rounded',
-  'material-symbols-sharp': 'Material Symbols Sharp'
-);
+//$symbols: (
+//  'material-symbols-outlined': 'Material Symbols Outlined',
+//  'material-symbols-rounded': 'Material Symbols Rounded',
+//  'material-symbols-sharp': 'Material Symbols Sharp'
+//);
 
 @mixin material($className, $font-name, $ligatures) {
   .#{$className} {

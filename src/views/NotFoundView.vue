@@ -1,5 +1,4 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <div class="flex justify-center content-center flex-col h-full text-center">
@@ -8,7 +7,4 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
 
-
-</style>
