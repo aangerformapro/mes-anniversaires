@@ -4,6 +4,8 @@ import {Gift} from "./Gift.js";
 import Model from "../../assets/components/stores/Model.js";
 
 
+const DEFAULT_PICTURE = './assets/pictures/avatar.svg';
+
 export class Person extends Model
 {
 

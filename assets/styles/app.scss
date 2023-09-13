@@ -18,10 +18,15 @@ body {
 }
 
 #app {
-  max-width: 375px;
-  max-height: 812px;
+  max-width: 640px;
+  //max-height: 812px;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   box-shadow: 0 2px 20px rgb(0 0 0 / 25%);
+}
+
+.person-list{
+  height: calc(100vh - 260px);
+  max-height: calc(100vh - 260px);
 }

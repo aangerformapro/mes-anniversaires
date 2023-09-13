@@ -1,12 +1,13 @@
 <script setup>
 
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onMounted} from "vue";
 import {  usePersonsStore } from "../stores/persons.js";
+import {makeFakeData} from "../stores";
 
 
 
-//
-// makeFakeData(25);
+// //
+// makeFakeData(50);
 
 const peoples = usePersonsStore();
 
@@ -18,16 +19,14 @@ onMounted(() =>
   // console.debug(peoples.persons);
 });
 
-// onUnmounted(peoples.$subscribe((...s)=>{
-//   console.debug(s)
-// }));
+
 </script>
 
 <template>
-  <header>
-    <h1 class="mx-auto max-w-[200px] text-center mb-10">Mes Anniversaires</h1>
+  <header class="h-[160px]">
+    <h1 class="mx-auto max-w-[200px] text-center mb-6">Mes Anniversaires</h1>
     <form id="search-form" class="mb-3 relative">
-      <input class="" type="search" name="q" placeholder="Rechercher une personne" v-model="peoples.search">
+      <input class="app-input" type="search" name="q" placeholder="Rechercher une personne" v-model="peoples.search">
       <!--Search icon-->
       <span class="search-icon" id="basic-addon2">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
@@ -38,12 +37,12 @@ onMounted(() =>
       </span>
     </form>
   </header>
-  <div class="person-list overflow-y-auto max-h-[540px] mx-auto flex flex-col justify-center">
+  <div class="person-list overflow-y-auto mx-auto flex flex-col p-6">
 
-    <div v-if="peoples.value.length === 0">
+    <div v-if="peoples.value.length === 0" class="flex justify-center content-center my-auto">
       Vous n'avez ajouté personne
     </div>
-    <ul v-else>
+    <ul v-else  class="w-[90%]">
       <li v-for="person in peoples.filtered">
         <img :alt="person.name" :src="person.photo">
         {{ person.name }} né le {{ person.birthdayFr }}

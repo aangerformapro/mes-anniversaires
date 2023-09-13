@@ -164,7 +164,6 @@ export default class Model {
         entities.set(entity.id, entity);
         // update storage
         this.hook.set(this.findAll().map(x => x.extract()));
-
     }
 
     /**
@@ -245,7 +244,33 @@ export default class Model {
         throw new TypeError('Invalid constrain provided');
     }
 
+    /**
+     * @param {string|Model} id
+     */
+    static remove(id){
 
+        const type = getClass(this);
+        if (getClass(this) === 'Model') {
+            throw new Error('Cannot call Model.remove() directly.');
+        }
+
+        if (id instanceof Model) {
+
+            if(getClass(id) !== type){
+                throw new TypeError(`Invalid entity of type ${getClass(id)} provided`);
+            }
+            id = id.id;
+        }
+
+        if(!isString(id)){
+            throw new TypeError('Invalid id supplied.');
+        }
+
+        initializeModel(this);
+        const newData = this.findAll().filter(x=> x.id !== id);
+        entities.delete(id);
+        this.hook.set(newData);
+    }
 
 
     /**
