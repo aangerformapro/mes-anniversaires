@@ -48,7 +48,7 @@
     border-radius: 100px;
   }
 
-  .app-input::placeholder {
+  .app-input::placeholder, .placeholder {
     color: #bdbdbd;
   }
 
@@ -59,6 +59,7 @@
 
   .button {
     @apply inline-block bg-primary text-xs font-medium capitalize leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+    @apply disabled:pointer-events-none disabled:bg-primary-500;
     font-size: 16px;
   }
 
@@ -108,7 +109,25 @@
     {
       @apply z-10 ;
     }
+    .file-input{
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
 
+      & ~ label{
+        cursor: pointer;
+      }
+
+      &:focus ~ label{
+        @apply focus:z-[3] border-primary text-neutral-700 shadow-[inset_0_0_0_1px_rgb(59,113,202)] outline-none;
+        * {
+          pointer-events: none;
+        }
+      }
+    }
 
 
 

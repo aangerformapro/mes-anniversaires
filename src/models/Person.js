@@ -37,7 +37,7 @@ export class Person extends Model
 
         if (isString(data.birthday))
         {
-            data.birthday = new Date(data.birthday);
+            data.birthday = new Date(data.birthday.split('/').reverse().join('-'));
         }
 
         if (!(data.birthday instanceof Date))
