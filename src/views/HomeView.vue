@@ -45,15 +45,16 @@ function resetInput() {
 
       </form>
     </header>
-    <div class="person-list overflow-y-auto mx-auto flex flex-col p-6 h-[calc(100vh-260px)] max-h-[calc(100vh-260px)]">
+    <div class="person-list mx-auto flex flex-col p-6 h-[calc(100vh-260px)] max-h-[calc(100vh-260px)] overflow-y-auto">
 
       <div v-if="peoples.value.length === 0" class="flex justify-center content-center my-auto">
         Vous n'avez ajouté personne
       </div>
       <ul v-else class="w-[90%]">
-        <li v-for="person in peoples.filtered">
+        <li v-for="person in peoples.filtered" class="list-item">
           <img :alt="person.name" :src="person.photo">
-          {{ person.name }} né le {{ person.birthdayFr }}
+          {{ person.name }} né le {{ person.birthdayFr }} à son prochain anniversaire dans {{ person.nextDays }} jours
+          et à {{ person.age }} ans
         </li>
       </ul>
 
@@ -70,7 +71,7 @@ function resetInput() {
   </div>
 
   <SlideInForm :show="add" @hide="add=false">
-      <AjouterAnniversaire/>
+    <AjouterAnniversaire @hide="add=false"/>
   </SlideInForm>
 
 </template>

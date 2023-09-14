@@ -26,6 +26,7 @@
   h1 {
     font-size: 30px;
     font-weight: 600;
+    line-height: 1.1;
   }
 
   h2 {
@@ -64,9 +65,12 @@
   }
 
   .list-item {
-    @apply w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50;
+    @apply w-full relative py-4;
+    &:not(:last-child)::after {
+      content: '';
+      @apply w-full absolute border-b-2 border-neutral-100 border-opacity-100 dark:border-opacity-50 bottom-[1px] left-0;
+    }
   }
-
 
 
   .slide-in-form {
@@ -77,15 +81,14 @@
     left: 4px;
     right: 4px;
     height: 0;
-    transition-duration: .75s;
+    transition-duration: .65s;
     transition-property: height;
-
     transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 
     .slide-out-btn {
       user-select: none;
       @apply flex flex-col items-center justify-center w-full;
-      @apply cursor-pointer h-[64px];
+      @apply cursor-pointer min-h-[64px];
       &::before {
         content: '';
         width: 32px;
@@ -95,21 +98,24 @@
 
       }
     }
+
     &[data-visible="true"] {
       height: 75vh;
+      overflow-y: scroll;
+
     }
 
 
-    .slide-in-form-inner{
+    .slide-in-form-inner {
       @apply flex flex-col w-full h-full items-center;
     }
 
 
-    [id*="datepicker-toggle-"]
-    {
+    [id*="datepicker-toggle-"] {
       @apply z-10 ;
     }
-    .file-input{
+
+    .file-input {
       width: 0.1px;
       height: 0.1px;
       opacity: 0;
@@ -117,20 +123,17 @@
       position: absolute;
       z-index: -1;
 
-      & ~ label{
+      & ~ label {
         cursor: pointer;
       }
 
-      &:focus ~ label{
+      &:focus ~ label {
         @apply focus:z-[3] border-primary text-neutral-700 shadow-[inset_0_0_0_1px_rgb(59,113,202)] outline-none;
         * {
           pointer-events: none;
         }
       }
     }
-
-
-
 
 
   }

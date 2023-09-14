@@ -1,13 +1,12 @@
-
-import {isEmpty, isString} from "../../assets/utils/utils.mjs";
+import {isEmpty, isNumeric, isString} from "../../assets/utils/utils.mjs";
 import {Gift} from "./Gift.js";
 import Model from "../../assets/components/stores/Model.js";
 
 
 const DEFAULT_PICTURE = './assets/pictures/avatar.svg';
 
-export class Person extends Model
-{
+
+export class Person extends Model {
 
     /**
      * @type {string}
@@ -22,36 +21,64 @@ export class Person extends Model
      */
     photo;
 
-    get birthdayFr()
-    {
+    get birthdayFr() {
         return this.birthday.toLocaleDateString('fr-FR');
     }
 
-    validate(data)
-    {
+    get next() {
+        const
+            now = this.nowDate,
+            year = now.getUTCFullYear(),
+            day = this.birthday.getUTCDate(),
+            month = this.birthday.getUTCMonth(),
+            next = new Date(year, month, day);
+        if (now.getTime() > next.getTime()) {
+            next.setUTCFullYear(year + 1);
+        }
 
-        if (!isString(data.name) || isEmpty(data.name))
-        {
+        return next;
+    }
+
+    get nowDate() {
+        const now = new Date();
+        return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    }
+
+    get age() {
+
+        const result = Math.floor((this.nowDate.getTime() - this.birthday.getTime()) / (1000 * 60 * 60 * 24 * 365));
+        if (0 === this.nextDays) {
+            return result + 1;
+        }
+        return result;
+
+    }
+
+    get nextDays() {
+        return Math.min(Math.ceil(
+            (this.next.getTime() - this.nowDate.getTime()) / (1000 * 60 * 60 * 24)
+        ), 365);
+    }
+
+    validate(data) {
+
+        if (!isString(data.name) || isEmpty(data.name)) {
             throw new TypeError('Invalid Person name');
         }
 
-        if (isString(data.birthday))
-        {
-            data.birthday = new Date(data.birthday.split('/').reverse().join('-'));
+        if (isString(data.birthday)) {
+            data.birthday = new Date(data.birthday);
         }
 
-        if (!(data.birthday instanceof Date))
-        {
+        if (!(data.birthday instanceof Date) || data.birthday.toString() === 'Invalid Date') {
             throw new TypeError('Invalid birthday, not an instance of Date');
         }
 
-        if (isEmpty(data.photo))
-        {
+        if (isEmpty(data.photo)) {
             data.photo = DEFAULT_PICTURE;
         }
 
-        if (!isString(data.photo) || isEmpty(data.photo))
-        {
+        if (!isString(data.photo) || isEmpty(data.photo)) {
             throw new TypeError('Invalid Person photo');
         }
 
@@ -61,13 +88,11 @@ export class Person extends Model
     /**
      * @returns {Gift[]}
      */
-    get gifts()
-    {
-        return Gift.find({ id_person: this.id });
+    get gifts() {
+        return Gift.find({id_person: this.id});
     }
 
-    extract()
-    {
+    extract() {
         return {
             id: this.id,
             name: this.name,
