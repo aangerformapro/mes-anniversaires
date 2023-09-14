@@ -1,15 +1,25 @@
 <script setup>
 import {usePersonsStore} from "../stores/persons.js";
 import ButtonComponent from "../components/ButtonComponent.vue";
-import AddIcon from "../components/AddIcon.vue";
-import {ref} from "vue";
+import AddIcon from "../components/icons/AddIcon.vue";
+import {ref, watch} from "vue";
 import AjouterAnniversaire from "../components/AjouterAnniversaire.vue";
-import SearchIcon from "../components/SearchIcon.vue";
-import CancelIcon from "../components/CancelIcon.vue";
+import SearchIcon from "../components/icons/SearchIcon.vue";
+import CancelIcon from "../components/icons/CancelIcon.vue";
+import SlideUpForm from "../components/SlideInForm.vue";
+import SlideInForm from "../components/SlideInForm.vue";
 
 const peoples = usePersonsStore();
 
-const add = ref(false);
+const
+    add = ref(false),
+    form = ref(null);
+
+// watch(add, value => {
+//   if(form.value.slideUp !== value){
+//     form.value.slideUp = value
+//   }
+// });
 
 function clickButton() {
   add.value = !add.value;
@@ -58,7 +68,11 @@ function resetInput() {
       </ButtonComponent>
     </div>
   </div>
-  <AjouterAnniversaire :visible="add" @hide="add=false"/>
+
+  <SlideInForm :show="add" @hide="add=false">
+      <AjouterAnniversaire/>
+  </SlideInForm>
+
 </template>
 
 <style scoped>

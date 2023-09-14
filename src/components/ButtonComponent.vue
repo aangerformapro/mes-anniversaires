@@ -6,7 +6,6 @@ import {
 } from "tw-elements";
 import {onMounted} from "vue";
 
-
 const props = defineProps([
   'atclick'
 ]);
@@ -15,7 +14,6 @@ const props = defineProps([
 function handleClick(e){
     e.preventDefault();
     if(isFunction(props.atclick)){
-      console.debug(props)
       props.atclick(e);
     }
 }

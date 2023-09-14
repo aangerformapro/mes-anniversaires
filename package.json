@@ -11,7 +11,6 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
-    "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.2.1",
@@ -35,10 +34,10 @@
     "rollup-plugin-polyfill-node": "^0.12.0",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-vue": "^6.0.0",
-    "sass": "^1.66.1",
-    "tailwindcss": "^3.3.3"
+    "sass": "^1.66.1"
   },
   "dependencies": {
+    "tailwindcss": "^3.3.3",
     "@fontsource/inter": "^5.0.8",
     "pinia": "^2.1.6",
     "tw-elements": "^1.0.0",

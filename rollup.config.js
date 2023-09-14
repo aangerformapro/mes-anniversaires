@@ -17,7 +17,6 @@ import vue from 'rollup-plugin-vue';
 import rollupPluginInjectProcessEnv from "rollup-plugin-inject-process-env";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
-import alias from "@rollup/plugin-alias";
 
 
 const

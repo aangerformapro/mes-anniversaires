@@ -28,6 +28,11 @@
     font-weight: 600;
   }
 
+  h2 {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
   .my-shadow {
     box-shadow: 0 2px 20px rgb(0 0 0 / 25%);
   }
@@ -62,24 +67,24 @@
   }
 
 
-  #add-person-form {
-    @apply absolute bottom-0 bg-white rounded-t-[16px] z-10 overflow-hidden my-shadow border-[1px] border-solid border-neutral-300;
-    @apply flex flex-col items-center;
-  }
 
   .slide-in-form {
+
+    @apply absolute bottom-0 bg-white rounded-t-[16px] z-10 overflow-hidden my-shadow border-[1px] border-solid border-neutral-300;
+    @apply flex flex-col items-center;
+
     left: 4px;
     right: 4px;
     height: 0;
     transition-duration: .75s;
     transition-property: height;
 
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+
     .slide-out-btn {
       user-select: none;
       @apply flex flex-col items-center justify-center w-full;
       @apply cursor-pointer h-[64px];
-
-
       &::before {
         content: '';
         width: 32px;
@@ -88,13 +93,26 @@
         border-radius: 100px;
 
       }
-
     }
-
-
     &[data-visible="true"] {
       height: 75vh;
     }
+
+
+    .slide-in-form-inner{
+      @apply flex flex-col w-full h-full items-center;
+    }
+
+
+    [id*="datepicker-toggle-"]
+    {
+      @apply z-10 ;
+    }
+
+
+
+
+
 
   }
 
