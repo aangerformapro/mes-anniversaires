@@ -68,6 +68,11 @@ function onSubmit(e) {
     });
     emit('hide');
     form.reset();
+    form
+        .querySelector('.placeholder')
+        .classList.remove('text-neutral-600');
+
+    resetLabel();
 
   } catch (err) {
 
