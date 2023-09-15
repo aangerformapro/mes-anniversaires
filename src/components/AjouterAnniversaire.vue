@@ -10,6 +10,9 @@ import {onMounted, ref, watch} from "vue";
 import FileIcon from "./icons/FileIcon.vue";
 import ButtonComponent from "./ButtonComponent.vue";
 import {Person} from "../models/Person.js";
+import {DATE_DEFAULT_CONFIG} from "../../assets/utils/date-manager.js";
+import kit from "../stores/photos.js";
+import {uuidv4} from "../../assets/utils/utils.mjs";
 
 const
     inputDate = ref(null),
@@ -28,7 +31,7 @@ function fileChange(e) {
       fileInfo = e.target.files[0],
       label = e.target.parentElement.querySelector('.placeholder');
 
-  e.target.value = '';
+  // e.target.value = '';
   if (fileInfo?.type.includes('image/')) {
     label.classList.add('text-neutral-600');
     labelFile.value = fileInfo.name;
@@ -63,16 +66,35 @@ function onSubmit(e) {
   try {
 
     //manage file here
-    Person.add({
-      name, birthday
-    });
-    emit('hide');
-    form.reset();
-    form
-        .querySelector('.placeholder')
-        .classList.remove('text-neutral-600');
 
-    resetLabel();
+
+    if(form.photo.size > 0 ){
+
+      const fileName = uuidv4() + '.' + form.photo.name.split('.').pop();
+
+      kit.upload({
+        file: form.photo,
+        fileName,
+        folder: 'bmanager'
+      }).then(console.debug).catch(console.error);
+
+    }
+
+    console.debug(formData.photo);
+
+
+
+
+    // Person.add({
+    //   name, birthday
+    // });
+    // emit('hide');
+    // form.reset();
+    // form
+    //     .querySelector('.placeholder')
+    //     .classList.remove('text-neutral-600');
+    //
+    // resetLabel();
 
   } catch (err) {
 
@@ -93,15 +115,22 @@ function onChange() {
 
 onMounted(() => {
   initTE({Datepicker, Input});
-  new Datepicker(inputDate.value, {
-    disableFuture: true
-  });
+
+  Datepicker.getOrCreateInstance(inputDate.value).update(
+      {
+        ...DATE_DEFAULT_CONFIG.datePicker,
+        disableFuture: true,
+        disableInput: true
+
+      }
+  );
+
 
 });
 </script>
 
 <template>
-  <form id="add-person-form" class="flex flex-col w-full h-full items-center p-4" ref="form" @submit="onSubmit">
+  <form id="add-person-form" class="flex flex-col w-full h-full items-center p-4" ref="form" @change="onChange" @submit="onSubmit">
     <h2 class="mb-8">Ajouter un anniversaire</h2>
 
     <div class="form-group w-full mb-6">
@@ -111,7 +140,7 @@ onMounted(() => {
 
       <input
           class="app-input"
-          placeholder="Saisissez un nom"
+          placeholder="Saisissez un nom *"
           @input="onChange"
           name="name"
           id="name"
@@ -125,20 +154,16 @@ onMounted(() => {
       </label>
       <div
           ref="inputDate"
-          data-te-datepicker-init
-          data-te-input-wrapper-init
-          data-te-format="dd/mm/yyyy"
           class="relative rounded-[100px] overflow-hidden">
         <input
             class="app-input"
-            placeholder="Saisissez une date de naissance"
+            placeholder="dd/mm/yyyy *"
             type="text"
             @input="onChange"
-            @change="onChange"
             name="birthday"
             id="birthday"
-            required
-        >
+            pattern="^[0-1][0-9]\/[0-3][0-9]\/[1-2][0-9]{3}$"
+            required>
       </div>
 
     </div>

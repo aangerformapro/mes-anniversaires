@@ -50,17 +50,27 @@ function resetInput() {
       <div v-if="peoples.value.length === 0" class="flex justify-center content-center my-auto">
         Vous n'avez ajouté personne
       </div>
-      <ul v-else class="w-[90%]">
-        <li v-for="person in peoples.filtered" class="list-item">
-          <img :alt="person.name" :src="person.photo">
-          {{ person.name }} né le {{ person.birthdayFr }} à son prochain anniversaire dans {{ person.nextDays }} jours
-          et à {{ person.age }} ans
+      <ul v-else class="w-full mx-auto">
+        <li v-for="person in peoples.filtered" class="li-list-item">
+          <RouterLink :to="{ name: 'profile', params: { id: person.id }}" class="flex items-center flex-wrap w-full max-h-[50px]">
+            <div class="w-[50px] h-[50px] relative overflow-hidden">
+              <img :alt="person.name" :src="person.photo" class="object-cover object-center w-full h-full">
+            </div>
+            <div class="flex flex-col p-2 justify-between ms-4 mt-auto">
+              <h4 class="text-sky-400 font-semibold">{{ person.name }}</h4>
+              <div class="text-sm">
+                {{ person.birthdayFr }} - {{ person.age }} ans
+              </div>
+            </div>
+            <div class="text-sm text-neutral-500 ms-auto min-w-[50px] w-[10%]">
+              {{ person.nextDaysIntl }}
+            </div>
+          </RouterLink>
         </li>
       </ul>
-
     </div>
 
-    <div class="absolute bottom-[10px] w-[calc(100vw-40px)] max-w-[600px] h-[68px] pt-2">
+    <div class="absolute bottom-[10px] w-[calc(100vw-40px)] max-w-[984px] h-[68px] pt-2">
       <ButtonComponent
           :atclick="clickButton"
           class="flex justify-center items-center text-center w-full h-full uppercase">
@@ -76,6 +86,8 @@ function resetInput() {
 
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+
+
 
 </style>

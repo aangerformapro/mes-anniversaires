@@ -2,8 +2,8 @@ import {isEmpty, isNumeric, isString} from "../../assets/utils/utils.mjs";
 import {Gift} from "./Gift.js";
 import Model from "../../assets/components/stores/Model.js";
 
-
 const DEFAULT_PICTURE = './assets/pictures/avatar.svg';
+
 
 
 export class Person extends Model {
@@ -60,6 +60,12 @@ export class Person extends Model {
         ), 365);
     }
 
+
+    get nextDaysIntl(){
+        const translator = new Intl.RelativeTimeFormat('fr', {style: 'long'});
+        return translator.format(this.nextDays, 'day')
+    }
+
     validate(data) {
 
         if (!isString(data.name) || isEmpty(data.name)) {
@@ -81,8 +87,6 @@ export class Person extends Model {
         if (!isString(data.photo) || isEmpty(data.photo)) {
             throw new TypeError('Invalid Person photo');
         }
-
-
     }
 
     /**

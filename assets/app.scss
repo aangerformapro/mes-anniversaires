@@ -39,7 +39,7 @@
   }
 
   #app {
-    @apply m-auto bg-white select-none w-[100vw] max-w-[640px] h-[100vh] overflow-hidden my-shadow relative;
+    @apply m-auto bg-white select-none w-[100vw] max-w-[1024px] h-[100vh] overflow-hidden my-shadow relative;
   }
 
   .app-input {
@@ -64,8 +64,9 @@
     font-size: 16px;
   }
 
-  .list-item {
-    @apply w-full relative py-4;
+  .li-list-item {
+    @apply w-full relative py-4 flex flex-nowrap;
+
     &:not(:last-child)::after {
       content: '';
       @apply w-full absolute border-b-2 border-neutral-100 border-opacity-100 dark:border-opacity-50 bottom-[1px] left-0;
@@ -134,8 +135,6 @@
         }
       }
     }
-
-
   }
 
 }
