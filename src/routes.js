@@ -7,13 +7,15 @@ export default [
     {
         path: '/',
         name: 'home',
-        component: HomeView
+        component: HomeView,
+        meta: {transition: 'fade-up'},
 
     },
     {
         path: '/profile/:id',
         name: 'profile',
-        component: ProfileView
+        component: ProfileView,
+        meta: {transition: 'slide-left'},
     },
     {
         path: '/about',

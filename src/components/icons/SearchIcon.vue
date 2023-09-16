@@ -1,16 +1,10 @@
 <script setup>
 const props = defineProps(['size']);
-
-let iconSize = 24;
-if (props.size) {
-  iconSize = props.size;
-}
-
 </script>
 
 <template>
   <svg
-      :width="iconSize" :height="iconSize"
+      :width="props.size || 24" :height="props.size || 24"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor">

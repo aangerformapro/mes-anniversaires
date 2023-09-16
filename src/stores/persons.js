@@ -9,17 +9,24 @@ export const usePersonsStore = defineStore(
     () => {
 
         const
-            value = ref(Person.findAll()),
+            value = ref(
+                /** @type {Person[]} */
+                []
+            ),
             search = ref(''),
-            filtered = ref(Person.findAll());
+            all = ref(
+                /** @type {Person[]} */
+                []
+            );
 
-        Person.hook.subscribe(() => {
-            value.value = Person.findAll();
-        });
+
+        function applySort(arr) {
+            return arr.sort((a, b) => a.next.getTime() - b.next.getTime());
+        }
 
         function applyFilter(persons, search) {
             if (isEmpty(search)) {
-                return value.value;
+                return applySort(all.value);
             }
             const results = new Set;
             for (let s of search.split(/\s+/)) {
@@ -32,18 +39,22 @@ export const usePersonsStore = defineStore(
                         x => results.add(x)
                     );
             }
-            return [...results];
+            return applySort([...results]);
         }
 
 
         watch(search, newValue => {
-            filtered.value = applyFilter(value.value, newValue);
+            value.value = applyFilter(all.value, newValue);
         });
 
-        watch(value, newValue => {
-            filtered.value = applyFilter(newValue, search.value);
+        watch(all, newValue => {
+            value.value = applyFilter(newValue, search.value);
         });
 
 
-        return {value, search, filtered};
+        Person.hook.subscribe(() => {
+            all.value = Person.findAll();
+        });
+
+        return {value, search, all};
     });

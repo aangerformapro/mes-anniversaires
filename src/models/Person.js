@@ -1,9 +1,11 @@
-import {isEmpty, isNumeric, isString} from "../../assets/utils/utils.mjs";
+import {isEmpty, isString, uniqid} from "../../assets/utils/utils.mjs";
 import {Gift} from "./Gift.js";
 import Model from "../../assets/components/stores/Model.js";
 
-const DEFAULT_PICTURE = './assets/pictures/avatar.svg';
 
+function getDefaultPicture() {
+    return `https://picsum.photos/seed/${uniqid().slice(0, 6)}/200/150`;
+}
 
 
 export class Person extends Model {
@@ -61,7 +63,7 @@ export class Person extends Model {
     }
 
 
-    get nextDaysIntl(){
+    get nextDaysIntl() {
         const translator = new Intl.RelativeTimeFormat('fr', {style: 'long'});
         return translator.format(this.nextDays, 'day')
     }
@@ -81,7 +83,7 @@ export class Person extends Model {
         }
 
         if (isEmpty(data.photo)) {
-            data.photo = DEFAULT_PICTURE;
+            data.photo = getDefaultPicture();
         }
 
         if (!isString(data.photo) || isEmpty(data.photo)) {
@@ -95,6 +97,11 @@ export class Person extends Model {
     get gifts() {
         return Gift.find({id_person: this.id});
     }
+
+    onDelete() {
+        this.gifts.forEach(g => Gift.remove(g));
+    }
+
 
     extract() {
         return {

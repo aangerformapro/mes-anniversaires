@@ -17,7 +17,7 @@ import vue from 'rollup-plugin-vue';
 import rollupPluginInjectProcessEnv from "rollup-plugin-inject-process-env";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
-
+import {obfuscator} from 'rollup-obfuscator';
 
 const
     defaults = {
@@ -32,7 +32,8 @@ const
         input: ['assets'],
         output: ['public/build'],
         watch: [],
-        livereload: true
+        livereload: true,
+        obfuscate: false,
     },
     instances = new Map();
 
@@ -64,11 +65,7 @@ class RTools {
                 vue({
                     target: 'browser',
                     css: false,
-                    // compilerOptions: {
-                    //     isProd
-                    // },
                     template: {
-                        devToolsEnabled: false,
                         isProduction: isProd
                     }
                 }),
@@ -113,7 +110,13 @@ class RTools {
             plugins.unshift(delPlugin({
                 targets: path.join(dir, '*.map')
             }));
-            plugins.push(terserPlugin());
+
+            if (this.cfg.obfuscate) {
+                plugins.push(obfuscator({sourceMap: false, stringArray: true}));
+            }
+            plugins.push(terserPlugin({
+                mangle: false,
+            }));
         } else {
             if (this.cfg.livereload) {
                 plugins.push(livereloadPlugin({

@@ -1,23 +1,71 @@
 import {defineStore} from "pinia";
-import {computed, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {Person} from "../models/Person.js";
 import {Gift} from "../models/Gift.js";
 import {isEmpty, removeAccent} from "../../assets/utils/utils.mjs";
 
 
-export const useGiftsStore = defineStore('gifts', ()=>{
+/**
+ * Custom store a la Svelte
+ */
+
+export const useGiftsStore = defineStore('gifts', () => {
 
     const
-        person = ref(null),
-        value = ref(null),
+        person = ref(
+            /** @type {Person|null} */
+            null
+        ),
+        value = ref(
+            /** @type {Gift[]} */
+            []
+        ),
         search = ref(''),
-        all = ref(null);
+        all = ref(
+            /** @type {Gift[]} */
+            []
+        );
 
-    watch(person, p=>{
-        if(p instanceof Person){
+    function applySort(arr) {
+        return arr.sort((a, b) => b.annee - a.annee);
+    }
+
+    function applyFilter(gifts, search) {
+        if (isEmpty(search)) {
+            return applySort(all.value);
+        }
+        const results = new Set;
+        for (let s of search.split(/\s+/)) {
+
+            gifts
+                .filter(
+                    x => (
+                        removeAccent(x.description.toLowerCase())
+                            .includes(removeAccent(s.toLowerCase())) ||
+                        (x.annee + '').includes(s)
+                    )
+                )
+                .forEach(
+                    x => results.add(x)
+                );
+        }
+        return applySort([...results]);
+    }
+
+    watch(search, s => {
+        value.value = applyFilter(all.value, s);
+    });
+
+    watch(all, a => {
+        value.value = applyFilter(a, search.value);
+    });
+
+
+    watch(person, p => {
+        if (p instanceof Person) {
             all.value = p.gifts;
-
-            console.debug(p.gifts);
+        } else if (p === null) {
+            all.value = [];
         }
     });
 
@@ -25,34 +73,9 @@ export const useGiftsStore = defineStore('gifts', ()=>{
         all.value = (person.value?.gifts) ?? [];
     });
 
-    function applyFilter(gifts, search) {
-        if (isEmpty(search)) {
-            return all.value;
-        }
-        const results = new Set;
-        for (let s of search.split(/\s+/)) {
-
-            gifts
-                .filter(
-                    x => removeAccent(x.description.toLowerCase())
-                        .includes(removeAccent(s.toLowerCase())))
-                .forEach(
-                    x => results.add(x)
-                );
-        }
-        return [...results];
-    }
-
-    watch(search, s=>{
-        applyFilter(all.value, s);
-    });
-
-    watch(all, a=>{
-        applyFilter(a, search.value);
-
-        console.debug(all.value, value.value);
-    });
-
 
     return {person, value, all, search};
-}) ;
+});
+
+
+

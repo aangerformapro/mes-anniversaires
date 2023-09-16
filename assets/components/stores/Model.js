@@ -1,6 +1,7 @@
 import {encode, getClass, isEmpty, isFunction, isPlainObject, isString, uniqid} from "../../utils/utils.mjs";
 import LocalStore from "./webstore.mjs";
 import Datastore from "./datastore.mjs";
+import EventManager from "../../utils/event-manager.mjs";
 
 
 const
@@ -23,7 +24,10 @@ function hydrateModel(type, data, validate = true) {
         uniqid.add(data.id);
     }
 
+    EventManager.mixin(i, false);
+
     validate && i.validate(data);
+
     for (let prop in data) {
         i[prop] = data[prop];
     }
@@ -35,7 +39,7 @@ function initializeModel(model) {
 
     const type = getClass(model);
 
-    if (! hooks.has(type) ) {
+    if (!hooks.has(type)) {
 
         // initialize entity cache localStorage
         model.dataStore.getItem(model.key, () => []).forEach(item => {
@@ -52,6 +56,11 @@ function initializeModel(model) {
  * A Base Model that Uses a DataStore as Database
  *
  * @abstract
+ *
+ * @property {Function} trigger {@link module:EventManager.trigger}
+ * @property {Function} on {@link module:EventManager.on}
+ * @property {Function} one {@link module:EventManager.one}
+ * @property {Function} off {@link module:EventManager.off}
  */
 export default class Model {
 
@@ -118,13 +127,15 @@ export default class Model {
             throw new Error('Cannot call Model.add() directly.');
         }
 
+        initializeModel(this);
+
+
         if (isPlainObject(data) && !isEmpty(data)) {
             data = hydrateModel(type, data, false);
         }
 
-        initializeModel(this);
-
         if (getClass(data) === getClass(this)) {
+            EventManager.mixin(data, false);
 
             if (isEmpty(data.id)) {
                 data.id = uniqid();
@@ -135,6 +146,8 @@ export default class Model {
                 entities.set(data.id, data);
                 // update localstorage
                 this.hook.set(this.findAll().map(x => x.extract()));
+                data.onAdd();
+                data.trigger('add');
             }
         }
 
@@ -164,6 +177,8 @@ export default class Model {
         entities.set(entity.id, entity);
         // update storage
         this.hook.set(this.findAll().map(x => x.extract()));
+        entity.onUpdate();
+        entity.trigger('update');
     }
 
     /**
@@ -176,7 +191,7 @@ export default class Model {
             throw new Error('Cannot call Model.add() directly.');
         }
 
-        if(typeof id === 'object' && null !== id){
+        if (typeof id === 'object' && null !== id) {
             id = id.id;
         }
 
@@ -196,7 +211,7 @@ export default class Model {
     }
 
     /**
-     * @return {Model[]}
+     * @return {Array}
      */
     static findAll() {
         if (getClass(this) === 'Model') {
@@ -212,7 +227,7 @@ export default class Model {
 
     /**
      * @param {function|object} constrain
-     * @return {Model[]}
+     * @return {Array}
      */
     static find(constrain = {}) {
 
@@ -246,8 +261,9 @@ export default class Model {
 
     /**
      * @param {string|Model} id
+     * @return {void}
      */
-    static remove(id){
+    static remove(id) {
 
         const type = getClass(this);
         if (getClass(this) === 'Model') {
@@ -256,20 +272,30 @@ export default class Model {
 
         if (id instanceof Model) {
 
-            if(getClass(id) !== type){
+            if (getClass(id) !== type) {
                 throw new TypeError(`Invalid entity of type ${getClass(id)} provided`);
             }
             id = id.id;
         }
 
-        if(!isString(id)){
+        if (!isString(id)) {
             throw new TypeError('Invalid id supplied.');
         }
 
         initializeModel(this);
-        const newData = this.findAll().filter(x=> x.id !== id);
-        entities.delete(id);
-        this.hook.set(newData);
+
+        const
+            entity = this.findById(id),
+            newData = this.findAll().filter(x => x.id !== id);
+
+        if (entity) {
+            entities.delete(id);
+            this.hook.set(newData);
+            entity.onDelete();
+            entity.trigger('delete');
+        }
+
+
     }
 
 
@@ -288,5 +314,17 @@ export default class Model {
      */
     extract() {
         throw new Error(getClass(this) + '.extract() not implemented');
+    }
+
+
+    onAdd() {
+    }
+
+
+    onUpdate() {
+    }
+
+
+    onDelete() {
     }
 }
