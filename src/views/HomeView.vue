@@ -64,17 +64,22 @@ function aboutButtonClick() {
         <ul v-else class="w-full mx-auto">
           <li v-for="person in peoples.value" class="li-list-item">
             <RouterLink :to="{ name: 'profile', params: { id: person.id }}"
-                        class="flex items-center flex-wrap w-full max-h-[64px]">
+                        class="flex items-center flex-nowrap w-full max-h-[64px]">
               <div class="w-[50px] h-[50px] rounded-[50%] overflow-hidden">
                 <img :alt="person.name" :src="person.photo" class="object-cover object-center w-full h-full">
               </div>
-              <div class="flex flex-col justify-between ms-[10px] h-full">
-                <h4 class="text-sky-400 font-bold">{{ person.name }}</h4>
-                <div class="text-sm font-semibold flex items-center mt-2">
-                  <PillComponent class="me-1">
-                    <CakeIcon size="16" class="me-1"/>
-                    {{ person.birthdayFr }}
-                  </PillComponent>
+              <div class="flex flex-col justify-center ms-[10px] h-full">
+                <h4 class="text-sm sm:text-base max-sm:text-xs text-sky-400 font-bold">{{ person.name }}</h4>
+                <div class="text-xs md:text-sm text-neutral-500">
+                  {{ person.nextDaysIntl }}
+                </div>
+              </div>
+              <div class="flex flex-col items-center ms-auto">
+                <PillComponent>
+                  <CakeIcon size="16" class="me-1"/>
+                  {{ person.birthdayFr }}
+                </PillComponent>
+                <div class="flex items-center my-1">
                   <PillComponent class="me-1">
                     <AgeIcon size="16" class="me-1"/>
                     {{ person.age }}
@@ -85,9 +90,7 @@ function aboutButtonClick() {
                   </PillComponent>
                 </div>
               </div>
-              <div class="text-sm text-neutral-500 ms-auto w-[75px] text-end">
-                {{ person.nextDaysIntl }}
-              </div>
+
             </RouterLink>
           </li>
         </ul>

@@ -71,7 +71,8 @@ onMounted(() => {
           <BackButton/>
         </nav>
         <div class="flex flex-col items-center mb-3 pt-8 relative">
-          <div class="rounded-full w-[128px] md:w-[160px] h-[128px] md:h-[160px] overflow-hidden bg-sky-50 border">
+          <div
+              class="rounded-full w-[128px] md:w-[160px] h-[128px] max-sm:w-[96px] max-sm:h-[96px] max-sm:my-4 md:h-[160px] overflow-hidden bg-sky-50 border">
             <img :alt="gifts.person.name" :src="gifts.person.photo" class="object-center object-cover w-full h-full">
           </div>
           <div class="absolute right-[-12px] bottom-[-12px]">
