@@ -8,9 +8,9 @@ import {
 
 import {onMounted, ref, unref, watch} from "vue";
 import ButtonComponent from "./ButtonComponent.vue";
-import {Person} from "../models/Person.js";
+import {Person} from "../stores";
 import {DATE_DEFAULT_CONFIG} from "../../assets/utils/date-manager.js";
-import kit from "../stores/photos.js";
+import {kit} from "../stores";
 import {uuidv4} from "../../assets/utils/utils.mjs";
 import FileInput from "./FileInput.vue";
 import Spinner from "./Spinner.vue";

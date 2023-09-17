@@ -14,8 +14,7 @@ import {
     isEmpty,
     isString,
     isArray,
-    BackedEnum,
-    isBool
+    BackedEnum
 } from '../../utils/utils.mjs';
 
 import icons from './sprite.mjs';
@@ -37,10 +36,7 @@ function findClosest(target, ...parents) {
 }
 
 
-function createDialogBox({
-                             title, content, id, idTitle, idDesc,
-
-                         } = {}) {
+function createDialogBox({title, content, id, idTitle, idDesc} = {}) {
 
     title ??= '';
     content ??= '';
@@ -128,7 +124,6 @@ export default class Dialog extends HtmlComponent {
 
 
     // ------------------ Variants ------------------
-
     static async prompt(message, defaultValue = null) {
 
         // .ng-dialog--form-input
@@ -428,11 +423,7 @@ export default class Dialog extends HtmlComponent {
 /**
  * Binding for svelte
  */
-export function createDialog({
-                                 backdropCloses,
-                                 canCancel,
-                                 canClose, position
-                             } = {}) {
+export function createDialog({backdropCloses, canCancel, canClose, position} = {}) {
 
 
     const dialog = new Dialog();

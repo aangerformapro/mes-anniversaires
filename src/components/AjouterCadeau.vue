@@ -1,11 +1,10 @@
 <script setup>
 
-import {onBeforeMount, onBeforeUnmount, onMounted, onUnmounted, ref, unref, watch} from "vue";
+import {onMounted, ref, unref, watch} from "vue";
 import ButtonComponent from "./ButtonComponent.vue";
 import {Select, initTE, Input} from "tw-elements";
 import {isEmpty} from "../../assets/utils/utils.mjs";
-import {Gift} from "../models/Gift.js";
-import {Person} from "../models/Person.js";
+import {Gift, Person} from "../stores";
 import {useRoute} from "vue-router";
 
 const

@@ -13,5 +13,4 @@ app
         history: createWebHistory(),
         routes
     }))
-
     .mount('#app');

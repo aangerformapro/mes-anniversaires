@@ -3,11 +3,10 @@
 import {onMounted, ref, unref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import NotFoundView from "./NotFoundView.vue";
-import {useGiftsStore} from "../stores/gifts.js";
+import {useGiftsStore} from "../stores";
 import SearchIcon from "../components/icons/SearchIcon.vue";
 import CancelIcon from "../components/icons/CancelIcon.vue";
-import {Person} from "../models/Person.js";
-import ArrowBack from "../components/icons/ArrowBack.vue";
+import {Person} from "../stores";
 import SlideInForm from "../components/SlideInForm.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
 import GiftIcon from "../components/icons/GiftIcon.vue";
@@ -17,11 +16,9 @@ import AgeIcon from "../components/icons/AgeIcon.vue";
 import ScheduleIcon from "../components/icons/ScheduleIcon.vue";
 import PillComponent from "../components/PillComponent.vue";
 import TrashIcon from "../components/icons/TrashIcon.vue";
-import {
-  Ripple,
-  initTE,
-} from "tw-elements";
 import Dialog from "../../assets/components/others/dialog.mjs";
+import ActionButton from "../components/ActionButton.vue";
+import BackButton from "../components/BackButton.vue";
 
 
 const add = ref(false), form = ref(null), gifts = useGiftsStore(), router = useRouter();
@@ -39,7 +36,6 @@ function removeProfile() {
 
 
 onMounted(() => {
-  initTE({Ripple});
   gifts.person = Person.findById(useRoute().params.id);
 });
 
@@ -72,26 +68,16 @@ onMounted(() => {
       </div>
       <header class="relative z-20 h-[285px] md:h-[320px]">
         <nav class="absolute top-0 left-0 pt-2 z-[100]">
-          <RouterLink :to="{name: 'home'}"
-                      class="inline-block items-center font-base bg-transparent hover:bg-white text-white hover:text-neutral-600 py-2 px-3 rounded">
-            <ArrowBack size="20" class="me-1 inline-block align-middle"/>
-            <span class="align-middle">Retour</span>
-          </RouterLink>
+          <BackButton/>
         </nav>
         <div class="flex flex-col items-center mb-3 pt-8 relative">
           <div class="rounded-full w-[128px] md:w-[160px] h-[128px] md:h-[160px] overflow-hidden bg-sky-50 border">
             <img :alt="gifts.person.name" :src="gifts.person.photo" class="object-center object-cover w-full h-full">
           </div>
           <div class="absolute right-[-12px] bottom-[-12px]">
-            <button
-                @click="removeProfile"
-                title="Supprimer Profil"
-                type="button"
-                data-te-ripple-init
-                data-te-ripple-color="light"
-                class="inline-block rounded-full bg-primary p-2 uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
+            <ActionButton @click="removeProfile" title="Supprimer profil">
               <TrashIcon/>
-            </button>
+            </ActionButton>
           </div>
         </div>
 
@@ -106,7 +92,7 @@ onMounted(() => {
                 v-model="gifts.search"
                 @focus="add = false">
             <span class="search-icon" @click="gifts.search = ''">
-              <SearchIcon v-if="!gifts.search" fill="#bdbdbd"/>
+              <SearchIcon v-if="!gifts.search" class="text-stone-300"/>
               <CancelIcon :size="32" v-else class="text-neutral-800"/>
           </span>
           </form>

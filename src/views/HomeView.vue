@@ -1,5 +1,5 @@
 <script setup>
-import {usePersonsStore} from "../stores/persons.js";
+import {usePersonsStore} from "../stores";
 import ButtonComponent from "../components/ButtonComponent.vue";
 import AddIcon from "../components/icons/AddIcon.vue";
 import {ref} from "vue";
@@ -11,12 +11,16 @@ import PillComponent from "../components/PillComponent.vue";
 import CakeIcon from "../components/icons/CakeIcon.vue";
 import AgeIcon from "../components/icons/AgeIcon.vue";
 import GiftIcon from "../components/icons/GiftIcon.vue";
+import ActionButton from "../components/ActionButton.vue";
+import AboutIcon from "../components/icons/AboutIcon.vue";
+import {useRouter} from "vue-router";
 
 const peoples = usePersonsStore();
 
 const
     add = ref(false),
-    form = ref(null);
+    form = ref(null),
+    router = useRouter();
 
 function clickButton() {
   add.value = !add.value;
@@ -26,22 +30,30 @@ function resetInput() {
   peoples.search = '';
 }
 
+function aboutButtonClick() {
+  router.push({name: 'about'});
+}
+
 </script>
 
 <template>
   <div class="h-full w-full">
     <div class="h-[100%] max-h-[100%] w-[100%] p-5">
-      <header class="h-[160px]">
+      <header class="h-[160px] relative">
         <h1 class="mx-auto max-w-[200px] text-center mb-6">Mes Anniversaires</h1>
         <form id="search-form" class="mb-3 relative">
           <input class="app-input" type="search" name="q" placeholder="Rechercher une personne" v-model="peoples.search"
                  @focus="add = false">
           <span class="search-icon" @click="resetInput">
-          <SearchIcon v-if="!peoples.search" fill="#bdbdbd"/>
-          <CancelIcon :size="32" v-else class="text-neutral-800"/>
-        </span>
-
+            <SearchIcon v-if="!peoples.search" class="text-stone-300"/>
+            <CancelIcon :size="32" v-else class="text-neutral-800"/>
+          </span>
         </form>
+        <div class="absolute right-[-10px] top-[-10px]">
+          <ActionButton title="A Propos" @click="aboutButtonClick">
+            <AboutIcon size="16"/>
+          </ActionButton>
+        </div>
       </header>
       <div
           class="person-list mx-auto flex flex-col pb-6 pe-4 h-[calc(100vh-260px)] max-h-[calc(100vh-260px)] overflow-y-auto">

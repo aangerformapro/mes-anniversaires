@@ -44,13 +44,11 @@
 
   .app-input {
     @apply relative m-0 block w-full min-w-0 flex-auto border border-solid border-neutral-300 bg-transparent bg-clip-padding p-4 text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary pe-10;
-    height: 50px;
-    background: #f6f6f6;
-    border-radius: 100px;
+    @apply bg-neutral-100 h-[50px] rounded-[100px];
   }
 
   .app-input::placeholder, .placeholder {
-    color: #bdbdbd;
+    @apply text-stone-300;
   }
 
   .search-icon {
@@ -60,8 +58,7 @@
 
   .button {
     @apply inline-block bg-primary text-xs font-medium capitalize leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
-    @apply disabled:pointer-events-none disabled:bg-primary-500;
-    font-size: 16px;
+    @apply disabled:pointer-events-none disabled:bg-primary-500 text-base;
   }
 
   .li-list-item {
@@ -92,18 +89,12 @@
       @apply cursor-pointer min-h-[64px];
       &::before {
         content: '';
-        width: 32px;
-        height: 4px;
-        background: #e8e8e8;
-        border-radius: 100px;
-
+        @apply w-8 h-1 bg-gray-200;
       }
     }
 
     &[data-visible="true"] {
-      height: 75vh;
-      overflow-y: scroll;
-
+      @apply h-[75vh] overflow-y-scroll;
     }
 
 

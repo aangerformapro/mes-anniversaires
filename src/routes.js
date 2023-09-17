@@ -20,10 +20,13 @@ export default [
     {
         path: '/about',
         name: 'about',
-        component: AboutView
+        component: AboutView,
+        meta: {transition: 'slide-left'},
     },
     {
         path: '/:catchAll(.*)',
         component: NotFoundView
     }
 ];
+
+

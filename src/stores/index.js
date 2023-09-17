@@ -1,10 +1,14 @@
 import {Person} from "../models/Person.js";
 import {Gift} from "../models/Gift.js";
-import {makeFakeData} from "./faker.js";
+import {usePersonsStore} from "./persons.js";
+import {useGiftsStore} from "./gifts.js";
+import kit from "./photos.js";
 
 
 export {
     Person,
     Gift,
-    makeFakeData,
+    usePersonsStore,
+    useGiftsStore,
+    kit,
 };

@@ -2,6 +2,7 @@
 import {RouterView, useRouter} from "vue-router";
 import AOS from "aos";
 import 'aos/dist/aos.css';
+import {onMounted} from "vue";
 
 
 const router = useRouter();
@@ -14,8 +15,9 @@ router.beforeEach((to, from) => {
     const toDepth = to.path.split('/').length;
     const fromDepth = from.path.split('/').length;
 
-    if (toDepth < fromDepth) {
-      const elem = document?.querySelector('#app>.aos-animate');
+
+    if (toDepth < fromDepth || from.path !== '/') {
+      const elem = document?.querySelector('#app > .aos-animate');
       if (elem) {
         elem.classList.remove('aos-animate');
         return setTimeout(
@@ -30,7 +32,10 @@ router.beforeEach((to, from) => {
   });
 });
 
-AOS.init({once: true});
+onMounted(() => {
+  AOS.init({once: true});
+});
+
 
 </script>
 
