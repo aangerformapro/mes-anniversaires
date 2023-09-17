@@ -50,10 +50,6 @@ function onSubmit(e) {
   const
       form = e.target.closest('form'),
       formData = Object.fromEntries(new FormData(form)),
-      profile = {
-        name: formData.name,
-        birthday: formData.birthday,
-      },
       addPerson = ({name, birthday, photo}) => {
         photo ??= null;
         Person.add({name, birthday, photo});

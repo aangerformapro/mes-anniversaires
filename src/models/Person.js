@@ -56,6 +56,12 @@ export class Person extends Model {
 
     }
 
+
+    get nextYear() {
+        return this.next.getUTCFullYear();
+    }
+
+
     get nextDays() {
         return Math.min(Math.ceil(
             (this.next.getTime() - this.nowDate.getTime()) / (1000 * 60 * 60 * 24)

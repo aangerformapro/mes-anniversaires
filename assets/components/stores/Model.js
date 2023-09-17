@@ -183,7 +183,6 @@ export default class Model {
 
     /**
      * @param {string|object} id
-     * @return {Model|null}
      */
     static findById(id) {
 

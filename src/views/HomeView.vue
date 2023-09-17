@@ -7,6 +7,10 @@ import AjouterAnniversaire from "../components/AjouterAnniversaire.vue";
 import SearchIcon from "../components/icons/SearchIcon.vue";
 import CancelIcon from "../components/icons/CancelIcon.vue";
 import SlideInForm from "../components/SlideInForm.vue";
+import PillComponent from "../components/PillComponent.vue";
+import CakeIcon from "../components/icons/CakeIcon.vue";
+import AgeIcon from "../components/icons/AgeIcon.vue";
+import GiftIcon from "../components/icons/GiftIcon.vue";
 
 const peoples = usePersonsStore();
 
@@ -40,7 +44,7 @@ function resetInput() {
         </form>
       </header>
       <div
-          class="person-list mx-auto flex flex-col py-6 pe-4 h-[calc(100vh-260px)] max-h-[calc(100vh-260px)] overflow-y-auto">
+          class="person-list mx-auto flex flex-col pb-6 pe-4 h-[calc(100vh-260px)] max-h-[calc(100vh-260px)] overflow-y-auto">
 
         <div v-if="peoples.all.length === 0" class="flex justify-center content-center my-auto">
           Vous n'avez ajouté personne
@@ -48,14 +52,25 @@ function resetInput() {
         <ul v-else class="w-full mx-auto">
           <li v-for="person in peoples.value" class="li-list-item">
             <RouterLink :to="{ name: 'profile', params: { id: person.id }}"
-                        class="flex items-center flex-wrap w-full max-h-[50px]">
+                        class="flex items-center flex-wrap w-full max-h-[64px]">
               <div class="w-[50px] h-[50px] rounded-[50%] overflow-hidden">
                 <img :alt="person.name" :src="person.photo" class="object-cover object-center w-full h-full">
               </div>
               <div class="flex flex-col justify-between ms-[10px] h-full">
                 <h4 class="text-sky-400 font-bold">{{ person.name }}</h4>
-                <div class="text-sm font-semibold">
-                  {{ person.birthdayFr }} - {{ person.age }} ans
+                <div class="text-sm font-semibold flex items-center mt-2">
+                  <PillComponent class="me-1">
+                    <CakeIcon size="16" class="me-1"/>
+                    {{ person.birthdayFr }}
+                  </PillComponent>
+                  <PillComponent class="me-1">
+                    <AgeIcon size="16" class="me-1"/>
+                    {{ person.age }}
+                  </PillComponent>
+                  <PillComponent>
+                    <GiftIcon size="16" class="me-1"/>
+                    {{ person.gifts.length }}
+                  </PillComponent>
                 </div>
               </div>
               <div class="text-sm text-neutral-500 ms-auto w-[75px] text-end">

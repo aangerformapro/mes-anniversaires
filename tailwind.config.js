@@ -6,6 +6,7 @@ export default {
         "public/**/*.html",
         "./src/**/*.{vue,js,ts,jsx,tsx}",
         "./node_modules/tw-elements/dist/js/**/*.js",
+        "./assets/components/others/**/*.{js,mjs}"
     ],
     theme: {
         extend: {}

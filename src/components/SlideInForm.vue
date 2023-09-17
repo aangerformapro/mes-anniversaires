@@ -3,21 +3,18 @@ import {ref} from "vue";
 
 const
     slideUp = ref(false),
-    props= defineProps({
-      show: Boolean
-    }),
+    props = defineProps(['show']),
     emit = defineEmits(['hide']);
 
 defineExpose({
   slideUp
 });
 
-const slideDown = () =>{
+const slideDown = () => {
   // slideUp.value = false;
-  props.show = false;
+  slideUp.value = false;
   emit('hide');
 }
-
 
 
 </script>
@@ -25,8 +22,8 @@ const slideDown = () =>{
 <template>
   <div
       class="slide-in-form"
-      :data-visible="show">
-    <div class="slide-out-btn" @click="slideDown" />
+      :data-visible="show || slideUp">
+    <div class="slide-out-btn" @click="slideDown"/>
     <div class="slide-in-form-inner">
       <slot/>
     </div>
