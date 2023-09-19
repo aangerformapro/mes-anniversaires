@@ -109,10 +109,10 @@ onMounted(() => {
       <div
           class="gift-list mx-auto flex flex-col py-6 pe-4 h-[calc(100vh-385px)] max-h-[calc(100vh-385px)] md:h-[calc(100vh-420px)] md:max-h-[calc(100vh-420px)] overflow-y-auto">
         <div v-if="! hasBirthdays" class="flex justify-center content-center my-auto">
-          Cette personne n'à pas eu d'anniversaire
+          Cette personne n'à pas encore eu d'anniversaire
         </div>
         <div v-else-if="gifts.all.length === 0" class="flex justify-center content-center my-auto">
-          Vous n'avez ajouté de cadeaux
+          Vous n'avez pas ajouté de cadeaux
         </div>
         <ul v-else class="w-full mx-auto">
           <li v-for="gift in gifts.value" class="li-list-item h-[50px] items-center overflow-hidden">

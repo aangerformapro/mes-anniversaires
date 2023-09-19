@@ -1,10 +1,12 @@
 <script setup>
 
-import {ref, unref} from "vue";
+import {onMounted, ref, unref} from "vue";
 import aosConfig from "@/config/aos.config";
+import {useGlobalCounterStore} from "@/stores/counter";
 
 const
     root = ref(null),
+    counter = useGlobalCounterStore(),
     props = defineProps({
       transition: String
     }),
@@ -37,6 +39,13 @@ function out(timeout) {
 }
 
 
+// fcp fix
+onMounted(() => {
+  if (counter.count < 2) {
+    counter.increment();
+  }
+});
+
 defineExpose({
   root, out
 });
@@ -47,7 +56,7 @@ defineExpose({
 
   <div
       ref="root"
-      v-if="props.transition"
+      v-if="props.transition && counter.count > 1"
       :data-aos="props.transition"
       @animationend="onEnd"
       @transitionend="onEnd"
