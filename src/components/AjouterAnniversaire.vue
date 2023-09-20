@@ -117,7 +117,6 @@ function formReset() {
 
 onMounted(() => {
   initTE({Datepicker, Input});
-
   Datepicker.getOrCreateInstance(inputDate.value).update(
       {
         ...DATE_DEFAULT_CONFIG.datePicker,
@@ -125,8 +124,6 @@ onMounted(() => {
         disableInput: true
       }
   );
-
-
 });
 </script>
 

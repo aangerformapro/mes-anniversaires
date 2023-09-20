@@ -24,7 +24,7 @@ const slideDown = () => {
       class="slide-in-form"
       :data-visible="show || slideUp">
     <div class="slide-out-btn" @click="slideDown"/>
-    <div class="slide-in-form-inner">
+    <div class="slide-in-form-inner" v-if="show || slideUp">
       <slot/>
     </div>
 
